@@ -1,0 +1,4 @@
+flask
+docx2txt
+sendgrid
+pdfminer.six
