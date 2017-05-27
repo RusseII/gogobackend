@@ -1,3 +1,12 @@
-test:
-  override:
-    - pytest
+version: 2
+jobs:
+  build:
+    working_directory: ~/
+    docker:
+      - image: python:3.6.0
+    steps:
+      - checkout
+      - run: pip install -r requirements/dev.txt
+      - run: py.test
+
+    
