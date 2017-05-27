@@ -60,7 +60,6 @@ class ParseData():
 		temp = re.search(r'[\w\.-]+@[\w\.-]+', data)
 		return temp.group()
 
-
 if __name__ == '__main__':
 	start = time.time()
 
