@@ -6,7 +6,7 @@ jobs:
       - image: python:3.6.0
     steps:
       - checkout
-      - run: pip install -r requirements/dev.txt
+      - run: pip install -r requirements.txt
       - run: py.test
 
     
