@@ -2,3 +2,6 @@ flask
 docx2txt
 sendgrid
 pdfminer.six
+pytest
+pytest-xdist
+mock

@@ -1,7 +1,7 @@
 import sys
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.pdfpage import PDFPage
-from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
+from pdfminer.converter import TextConverter
 from pdfminer.layout import LAParams
 from io import StringIO
 import docx2txt
@@ -41,7 +41,6 @@ class ParseData():
 
 		return file_1
 
-
 	def parse_emails_to_string(self, file):
 		if file.endswith(".pdf"):
 			return self.pdf_parser(file)
@@ -56,21 +55,16 @@ class ParseData():
 			raise ValueError("""The file that was passed to "parse_emails_to_string
 				did not have a correct file extention""")
 
-
 	def find_emails(self, file):
 		data = self.parse_emails_to_string(file)
 		temp = re.search(r'[\w\.-]+@[\w\.-]+', data)
 		return temp.group()
 
 
-	
-	
 if __name__ == '__main__':
 	start = time.time()
 
 	for i in range(1):
-  	  print(ParseData().find_emails(sys.argv[1]))
-  	  
+		print(ParseData().find_emails(sys.argv[1]))
 	end = time.time()
-	#print(end - start)
-
+	# print(end - start)
