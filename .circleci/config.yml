@@ -1,4 +1,4 @@
 test:
   override:
-    - py.test
+      - py.test
         parallel: true
