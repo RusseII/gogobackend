@@ -3,9 +3,10 @@ jobs:
   build:
     working_directory: ~/gogobackend
     docker:
-      - image: python:3.6.1-onbuild
+      - image: python:3.6.1
     steps:
       - checkout
+      - run: pip install -r requirements.txt
       - run: py.test
 
     
