@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/gogobackend
     docker:
-      - image: python:2.7.13
+      - image: python:3.36
     steps:
       - checkout
       - run: pip install -r requirements.txt
