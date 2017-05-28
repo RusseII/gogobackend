@@ -10,7 +10,7 @@ class TestParseData():
     pd = ParseData()
 
     def test_find_emails(self):
-        assert(self.pd.find_emails('tests/resumes/julie.doc')
+        assert(self.pd.find_emails('tests/resumes/jule.doc')
                == ["jha12@zips.uakron.edu"])
         assert(self.pd.find_emails('tests/resumes/kyle.docx')
                == ["Kjv13@zips.uakron.edu"])
