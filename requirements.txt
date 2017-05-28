@@ -5,4 +5,3 @@ pdfminer.six==20170419
 pytest==3.0.7
 pytest-xdist==1.16.0
 mock==2.0.0
-pytest-circleci==0.0.2
