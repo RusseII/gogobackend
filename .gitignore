@@ -100,5 +100,8 @@ ENV/
 # mypy
 .mypy_cache/
 
-#Annoying Mac files
+# Annoying Mac files
 .DS_Store
+
+# Annoying vim files
+.un~
