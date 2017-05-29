@@ -5,3 +5,7 @@ pdfminer.six
 pytest
 pytest-xdist
 mock
+python-dotenv
+python-jose
+flask-cors
+pymongo
