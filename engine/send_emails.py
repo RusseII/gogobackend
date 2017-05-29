@@ -19,19 +19,19 @@ class HandleEmail():
     def send(self, email):
 
         # set outgoing email from parsed resume
-        destination_emails = email
+        destination_emails = email[0]
 
         # parses first part of email (part before the @)
         # later used to personally great each user
         regex_str = r'^([^@]+)@[^@]+$'
-        matchobj = re.search(regex_str, email)
+        matchobj = re.search(regex_str, email[0])
         # group(1) is used to only select for the first part
         first_part_of_email = matchobj.group(1)
 
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
         from_email = Email("Russsell@DeepHire.io")
-        to_email = Email({email: "rwr21@zips.uakron.edu"})
+        to_email = Email(destination_emails)
         subject = "Happy Saturday!"
         content = Content("text/plain", "Hello " + first_part_of_email + "!")
         mail = Mail(from_email, subject, to_email, content)
