@@ -1,7 +1,7 @@
 import sendgrid
 import os
-from sendgrid.helpers.mail import Email, Content, Mail, MailSettings, SandBoxMode
-
+from sendgrid.helpers.mail import (Email, Content, Mail, MailSettings,
+                                   SandBoxMode)
 
 
 def test_send_email():
