@@ -171,11 +171,13 @@ def secured_private_ping():
     return "You don't have access to this resource"
 
 
-@APP.route("/api/insert_response", method=['POST'])
+@APP.route("/secured/api/insert_response")
 @cross_origin(headers=["Content-Type", "Authorization"])
 @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
 @requires_auth
 def insert_response():
+    """Insert a survey question response to database
+    """
     data = request.get_json()
     db_responses.responses.insert(data)
     for doc in db_responses.responses.find():
