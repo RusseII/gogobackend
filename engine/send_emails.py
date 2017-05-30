@@ -12,7 +12,6 @@ except:
 
 
 class HandleEmail():
-
     def __init__(self):
         pass
 
@@ -38,8 +37,6 @@ class HandleEmail():
                 }
             }
         }
-
-
 
         # set outgoing email from parsed resume
         destination_emails = email[0]
@@ -73,6 +70,7 @@ class HandleEmail():
         email = pd.find_emails(file)
         self.send(email)
         return ("email sent to " + email)
+
 
 if __name__ == '__main__':
     print(HandleEmail().send(
