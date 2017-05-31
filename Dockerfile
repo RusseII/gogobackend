@@ -5,10 +5,10 @@ FROM python:3-onbuild
 EXPOSE 3001
 
 #export sendgrid key so sendgrid works
-export SENDGRID_API_KEY
+RUN export SENDGRID_API_KEY
 
 #run tests
-pytest
+RUN pytest
 
 
 
