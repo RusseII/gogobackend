@@ -9,8 +9,9 @@ dependencies:
 
 test:
   override:
-    - docker run -d -p 3001:3001 -e "DOCKER_EMAIL"-e "AUTH0_DOMAIN" -e "API_ID" -e "DOCKER_PASS" -e "DOCKER_USER" -e "SENDGRID_API_KEY" deephire/backend; sleep 10
+    - docker run -d -p 3001:3001 -e "AUTH0_DOMAIN" -e "API_ID" -e "DOCKER_EMAIL" -e "DOCKER_PASS" -e "DOCKER_USER" -e "SENDGRID_API_KEY" deephire/backend; sleep 10
     - curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
+    - 
 
 deployment:
   hub:
