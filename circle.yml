@@ -17,9 +17,5 @@ deployment:
   hub:
     branch: develop
     commands:
-      #- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker login
-      - $DOCKER_USER
-      - $DOCKER_PASS
-      - $DOCKER_EMAIL
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
       - docker push deephire/backend
