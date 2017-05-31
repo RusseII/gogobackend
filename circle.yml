@@ -1,0 +1,20 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker build --rm=false -t deephire/backend .
+
+test:
+  override:
+    - docker run -d -p 2000:3001 deephire/backend; sleep 10
+    - curl --retry 10 --retry-delay 5 -v http://localhost:2000/ping
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push docker/backend
