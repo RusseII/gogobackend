@@ -9,8 +9,8 @@ dependencies:
 
 test:
   override:
-    - docker run -d -p 2000:3001 deephire/backend; sleep 10
-    - curl --retry 10 --retry-delay 5 -v http://localhost:2000/ping
+    - docker run -d -p 3001:3001 deephire/backend; sleep 10
+    - curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
 
 deployment:
   hub:
