@@ -105,3 +105,8 @@ ENV/
 
 # Annoying vim files
 *.un~
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

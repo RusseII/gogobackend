@@ -1,0 +1,19 @@
+branch-defaults:
+  default:
+    environment: BackEnd-Production
+    group_suffix: null
+environment-defaults:
+  BackEnd-Production:
+    branch: null
+    repository: null
+global:
+  application_name: DeepHire
+  default_ec2_keyname: aws-eb
+  default_platform: Docker 1.12.6
+  default_region: us-east-1
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  sc: null
+  workspace_type: Application

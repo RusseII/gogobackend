@@ -1,2 +1,17 @@
+branch-defaults:
+  develop:
+    environment: gogobackend-dev
+    group_suffix: null
 global:
+  application_name: gogobackend
+  branch: null
+  default_ec2_keyname: russell
+  default_platform: Docker 1.12.6
+  default_region: us-west-2
+  instance_profile: null
+  platform_name: null
+  platform_version: null
   profile: eb-cli
+  repository: null
+  sc: git
+  workspace_type: Application

@@ -5,13 +5,14 @@ machine:
 dependencies:
   override:
     - docker info
-    - docker build --rm=false -t deephire/backend .
+    - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+    - docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .
     - pip install awscli
 
 test:
   override:
-    - docker run -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY deephire/backend pytest 
-    - docker run -d -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY deephire/backend; sleep 10
+    - docker run -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY "deephire/backend:$CIRCLE_BUILD_NUM" pytest 
+    - docker run -d -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 10
     - curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
     
 
@@ -23,5 +24,7 @@ deployment:
   hub:
     branch: develop
     commands:
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push deephire/backend
+      - docker push "deephire/backend:$CIRCLE_BUILD_NUM"
+      - sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
+      - cd .deploy && eb init -r us-east-1 BackEnd-Production
+      - cd .deploy && eb deploy -l $CIRCLE_BUILD_NUM
