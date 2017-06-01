@@ -1,10 +1,14 @@
 """Python Flask API Auth0 integration example
 """
 
+from bson import Binary, Code
+from bson.json_util import dumps
+
 from functools import wraps
 import json
 from os import environ as env, path
 import urllib
+from db import db_handler
 
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, _app_ctx_stack
@@ -171,18 +175,30 @@ def secured_private_ping():
     return "You don't have access to this resource"
 
 
+@APP.route("/secured/api/get_questionnaire")
+# @cross_origin(headers=["Content-Type", "Authorization"])
+# @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
+# @requires_auth
+def get_questionnaire():
+    """Get a survey from database
+    """
+    questionnaire = db_handler.Db_Handler().get_questionnaire()
+    return dumps(questionnaire)
+
+
 @APP.route("/secured/api/insert_response")
-@cross_origin(headers=["Content-Type", "Authorization"])
-@cross_origin(headers=["Access-Control-Allow-Origin", "*"])
-@requires_auth
+# @cross_origin(headers=["Content-Type", "Authorization"])
+# @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
+# @requires_auth
 def insert_response():
     """Insert a survey question response to database
     """
     data = request.get_json()
-    db_responses.responses.insert(data)
-    for doc in db_responses.responses.find():
+    db_handler.Db_Handler().insert_one_response(data)
+
+    for doc in db_handler.Db_Handler().responses.find():
         print(doc)
-    return ("hi")
+    return ({"code": "200"})
 
 
 @cross_origin(headers=["Content-Type", "Authorization"])
