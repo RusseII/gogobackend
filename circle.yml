@@ -22,4 +22,5 @@ deployment:
     commands:
       - docker push "deephire/backend:$CIRCLE_BUILD_NUM"
       - sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
+      - bash ./.deploy/setup-eb.sh
       - cd .deploy && eb deploy -l $CIRCLE_BUILD_NUM --profile default
