@@ -10,8 +10,7 @@ dependencies:
 
 test:
   override:
-    - echo $AUTH0_DOMAIN 
-    - pytest
+    - docker run -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY deephire/backend pytest 
     - docker run -d -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY deephire/backend; sleep 10
     - curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
     
