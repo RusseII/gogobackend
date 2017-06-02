@@ -176,20 +176,20 @@ def secured_private_ping():
 
 
 @APP.route("/secured/api/get_questionnaire")
-# @cross_origin(headers=["Content-Type", "Authorization"])
-# @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
-# @requires_auth
+@cross_origin(headers=["Content-Type", "Authorization"])
+@cross_origin(headers=["Access-Control-Allow-Origin", "*"])
+@requires_auth
 def get_questionnaire():
     """Get a survey from database
     """
-    questionnaire = db_handler.Db_Handler().get_questionnaire()
+    questionnaire = db_handler.Db_Handler().get_questionnaire("DeepHire")
     return dumps(questionnaire)
 
 
 @APP.route("/secured/api/insert_response")
-# @cross_origin(headers=["Content-Type", "Authorization"])
-# @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
-# @requires_auth
+@cross_origin(headers=["Content-Type", "Authorization"])
+@cross_origin(headers=["Access-Control-Allow-Origin", "*"])
+@requires_auth
 def insert_response():
     """Insert a survey question response to database
     """
