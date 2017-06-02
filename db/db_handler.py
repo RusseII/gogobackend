@@ -206,7 +206,7 @@ user = {
     "organization": "DeepHire"
 }
 
-handler = Db_Handler()
+# handler = Db_Handler()
 # handler.register_user(user)
 # handler.initialize_questionnaire()
-handler.get_proper_questionnaire()
+# handler.get_questionnaire()
