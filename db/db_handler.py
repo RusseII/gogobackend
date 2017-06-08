@@ -1,14 +1,20 @@
 import pymongo
 import pprint
+
+import os
+
+
 from bson import Binary, Code
 from bson.json_util import dumps
 
 
+
 class Db_Handler():
 
-    def __init__(self):
-        # can also pass in url to db as a string
-        self.client = pymongo.MongoClient()
+        passw = os.environ.get('MONGO_PASS')
+        usrn = os.environ.get('MONGO_USER')
+        self.client = pymongo.MongoClient("mongodb://"+ usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")  # can also pass in url to db as a string
+
         self.questionnaires = self.client.deephire.questionnaires
         self.questions = self.client.deephire.questions
         self.users = self.client.deephire.users
@@ -199,14 +205,17 @@ class Db_Handler():
         self.responses.insert_one(data)
 
 
-user = {
-    "first": "Steven",
-    "last": "Gates",
-    "email": "steven@deephire.io",
-    "organization": "DeepHire"
-}
+if __name__ == "__main__":
+  
+  user = {
+      "first": "Steven",
+      "last": "Gates",
+      "email": "steven@deephire.io",
+      "organization": "DeepHire"
+  }
+  
+  handler = Db_Handler()
+  handler.initialize_questionnaire()
+  print(handler.get_questionnaire())
 
-# handler = Db_Handler()
-# handler.register_user(user)
-# handler.initialize_questionnaire()
-# handler.get_questionnaire()
+
