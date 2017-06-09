@@ -13,7 +13,7 @@ from db import db_handler
 
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, _app_ctx_stack
-from flask_cors import cross_origin
+from flask_cors import cross_origin, CORS
 from jose import jwt
 
 load_dotenv(path.join(path.dirname(__file__), ".env"))
@@ -21,6 +21,7 @@ AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
 API_AUDIENCE = env["API_ID"]
 
 APP = Flask(__name__)
+CORS(APP)
 
 
 # Format error response and append status code.
@@ -187,19 +188,18 @@ def get_questionnaire():
     return dumps(questionnaire)
 
 
-@APP.route("/secured/api/insert_response")
+@APP.route("/secured/api/insert_response", methods = ['GET', 'POST'])
 @cross_origin(headers=["Content-Type", "Authorization"])
-@cross_origin(headers=["Access-Control-Allow-Origin", "*"])
-# @requires_auth
 def insert_response():
     """Insert a survey question response to database
     """
     data = request.get_json()
-    db_handler.Db_Handler().insert_one_response(data)
+    print(data)
+    #db_handler.Db_Handler().insert_one_response(data)
 
-    for doc in db_handler.Db_Handler().responses.find():
-        print(doc)
-    return ({"code": "200"})
+    #for doc in db_handler.Db_Handler().responses.find():
+     #   print(doc)
+    return ("data")
 
 
 @cross_origin(headers=["Content-Type", "Authorization"])
