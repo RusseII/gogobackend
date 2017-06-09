@@ -3,16 +3,17 @@
 
 from bson import Binary, Code
 from bson.json_util import dumps
+import pprint
 
 from functools import wraps
 import json
 from os import environ as env, path
-import urllib
+from urllib.request import urlopen
 from db import db_handler
 
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, _app_ctx_stack
-from flask_cors import cross_origin
+from flask_cors import cross_origin, CORS
 from jose import jwt
 
 load_dotenv(path.join(path.dirname(__file__), ".env"))
@@ -20,6 +21,7 @@ AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
 API_AUDIENCE = env["API_ID"]
 
 APP = Flask(__name__)
+CORS(APP)
 
 
 # Format error response and append status code.
@@ -90,7 +92,7 @@ def requires_auth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = get_token_auth_header()
-        jsonurl = urllib.urlopen("https://" + AUTH0_DOMAIN +
+        jsonurl = urlopen("https://" + AUTH0_DOMAIN +
                                  "/.well-known/jwks.json")
         jwks = json.loads(jsonurl.read())
         unverified_header = jwt.get_unverified_header(token)
@@ -176,29 +178,32 @@ def secured_private_ping():
 
 
 @APP.route("/secured/api/get_questionnaire")
-# @cross_origin(headers=["Content-Type", "Authorization"])
-# @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
+@cross_origin(headers=["Content-Type", "Authorization"])
+@cross_origin(headers=["Access-Control-Allow-Origin", "*"])
 # @requires_auth
 def get_questionnaire():
     """Get a survey from database
     """
-    questionnaire = db_handler.Db_Handler().get_questionnaire()
+    questionnaire = db_handler.Db_Handler().get_questionnaire("DeepHire")
     return dumps(questionnaire)
 
 
-@APP.route("/secured/api/insert_response")
-# @cross_origin(headers=["Content-Type", "Authorization"])
-# @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
-# @requires_auth
+@APP.route("/secured/api/insert_response", methods = ['GET', 'POST'])
+@cross_origin(headers=["Content-Type", "Authorization"])
 def insert_response():
     """Insert a survey question response to database
     """
-    data = request.get_json()
-    db_handler.Db_Handler().insert_one_response(data)
+    data = request.get_data().decode('utf-8')
+    
+    test=json.loads(data)
+    print(test)
+
+
+    db_handler.Db_Handler().insert_one_response(test)
 
     for doc in db_handler.Db_Handler().responses.find():
-        print(doc)
-    return ({"code": "200"})
+       print(doc)
+    return ('{"code":"success"')
 
 
 @cross_origin(headers=["Content-Type", "Authorization"])
