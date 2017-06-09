@@ -193,13 +193,17 @@ def get_questionnaire():
 def insert_response():
     """Insert a survey question response to database
     """
-    data = request.get_json()
-    print(data)
-    #db_handler.Db_Handler().insert_one_response(data)
+    data = request.get_data().decode('utf-8')
+    
+    test=json.loads(data)
+    print(test)
 
-    #for doc in db_handler.Db_Handler().responses.find():
-     #   print(doc)
-    return ("data")
+
+    db_handler.Db_Handler().insert_one_response(test)
+
+    for doc in db_handler.Db_Handler().responses.find():
+       print(doc)
+    return ('{"code":"success"')
 
 
 @cross_origin(headers=["Content-Type", "Authorization"])
