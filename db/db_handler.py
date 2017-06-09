@@ -201,15 +201,15 @@ class Db_Handler():
     def insert_one_response(self, data):
         self.responses.insert_one(data)
 
+if __name__ == "__main__":
+  user = {
+      "first": "Russell",
+      "last": "Ratcliffe",
+      "email": "russell@deephire.io",
+      "org": "DeepHire"
+  }
 
-user = {
-    "first": "Russell",
-    "last": "Ratcliffe",
-    "email": "russell@deephire.io",
-    "org": "DeepHire"
-}
-
-handler = Db_Handler()
-#handler.register_user(user)
-#handler.initialize_questionnaire()
-print(dumps(handler.get_questionnaire('DeepHire')))
+  handler = Db_Handler()
+  #handler.register_user(user)
+  #handler.initialize_questionnaire()
+  print(dumps(handler.get_questionnaire('DeepHire')))
