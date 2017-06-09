@@ -1,14 +1,17 @@
 import pymongo
 import pprint
-from bson import Binary, Code
+from bson import Binary, Code, ObjectId
 from bson.json_util import dumps
+import os
 
 
 class Db_Handler():
 
     def __init__(self):
         # can also pass in url to db as a string
-        self.client = pymongo.MongoClient()
+        passw = os.environ.get('MONGO_PASS')
+        usrn = os.environ.get('MONGO_NAME')
+        self.client = pymongo.MongoClient("mongodb://"+ usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")  # can also pass in url to db as a string
         self.questionnaires = self.client.deephire.questionnaires
         self.questions = self.client.deephire.questions
         self.users = self.client.deephire.users
@@ -17,7 +20,7 @@ class Db_Handler():
         self.responses = self.client.deephire.responses
 
     def initialize_questionnaire(self):
-        self.questions.insert({
+        self.questions.insert_many([{
             "_id":
             ObjectId("5931a9fb9c9870798ac4d4e3"),
             "creator":
@@ -37,7 +40,7 @@ class Db_Handler():
             "creator":
             "Deephire",
             "text":
-            "In the last seven days, have you received recognition or praise for doing good work?"
+            "In the last seven days, have you received recognition or praise for dsoing good work?"
         }, {
             "_id":
             ObjectId("5931ab77f25839ce7e73ecdc"),
@@ -95,7 +98,7 @@ class Db_Handler():
             "Deephire",
             "text":
             "At work, do you have the opportunity to do what you do best every day?"
-        })
+        }])
 
         self.questionnaires.insert([{
             "org":
@@ -198,15 +201,15 @@ class Db_Handler():
     def insert_one_response(self, data):
         self.responses.insert_one(data)
 
+if __name__ == "__main__":
+  user = {
+      "first": "Russell",
+      "last": "Ratcliffe",
+      "email": "russell@deephire.io",
+      "org": "DeepHire"
+  }
 
-user = {
-    "first": "Russell",
-    "last": "Ratcliffe",
-    "email": "russell@deephire.io",
-    "org": "DeepHire"
-}
-
-# handler = Db_Handler()
-# handler.register_user(user)
-# handler.initialize_questionnaire()
-# print(dumps(handler.get_questionnaire('DeepHire')))
+  handler = Db_Handler()
+  #handler.register_user(user)
+  #handler.initialize_questionnaire()
+  print(dumps(handler.get_questionnaire('DeepHire')))
