@@ -200,13 +200,13 @@ class Db_Handler():
 
 
 user = {
-    "first": "Steven",
-    "last": "Gates",
-    "email": "steven@deephire.io",
-    "organization": "DeepHire"
+    "first": "Russell",
+    "last": "Ratcliffe",
+    "email": "russell@deephire.io",
+    "org": "DeepHire"
 }
 
 # handler = Db_Handler()
 # handler.register_user(user)
 # handler.initialize_questionnaire()
-# handler.get_questionnaire()
+# print(dumps(handler.get_questionnaire('DeepHire')))
