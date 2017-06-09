@@ -20,7 +20,7 @@ class Db_Handler():
         self.responses = self.client.deephire.responses
 
     def initialize_questionnaire(self):
-        self.questions.insertMany([{
+        self.questions.insert_many([{
             "_id":
             ObjectId("5931a9fb9c9870798ac4d4e3"),
             "creator":
@@ -40,7 +40,7 @@ class Db_Handler():
             "creator":
             "Deephire",
             "text":
-            "In the last seven days, have you received recognition or praise for doing good work?"
+            "In the last seven days, have you received recognition or praise for dsoing good work?"
         }, {
             "_id":
             ObjectId("5931ab77f25839ce7e73ecdc"),
@@ -210,6 +210,6 @@ user = {
 }
 
 handler = Db_Handler()
-handler.register_user(user)
-handler.initialize_questionnaire()
+#handler.register_user(user)
+#handler.initialize_questionnaire()
 print(dumps(handler.get_questionnaire('DeepHire')))
