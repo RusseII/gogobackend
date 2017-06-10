@@ -39,7 +39,7 @@ class HandleEmail():
         }
 
         # set outgoing email from parsed resume
-        destination_emails = email[0]
+        destination_email = email
 
         # parses first part of email (part before the @)
         # later used to personally great each user
@@ -50,14 +50,14 @@ class HandleEmail():
 
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
-        from_email = Email("Russsell@DeepHire.io")
-        to_email = Email(destination_emails)
+        from_email = Email("Notify@DeepHire.io")
+        to_email = Email(destination_email)
         subject = "Happy Saturday!"
 
         mail_settings = MailSettings()
         mail_settings.sandbox_mode = SandBoxMode(True)
 
-        content = Content("text/plain", "Hello " + first_part_of_email + "!")
+        content = Content("text/plain", "Someone submitted a survey!")
         mail = Mail(from_email, subject, to_email, content)
         mail.mail_settings = mail_settings
         response = sg.client.mail.send.post(request_body=mail.get())
