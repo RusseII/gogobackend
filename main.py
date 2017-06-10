@@ -206,6 +206,7 @@ def insert_response():
        print(doc)
     HandleEmail().send("russell@deephire.io")
     HandleEmail().send("steve@deephire.io")
+    HandleEmail().send("nick@deephire.io")
     return ('{"code":"success"')
 
 
