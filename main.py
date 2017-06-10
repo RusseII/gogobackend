@@ -220,6 +220,5 @@ def secured_private_ping():
         return "All good. You're authenticated and the access token has the appropriate scope"
     return "You don't have access to this resource"
 
-
 if __name__ == "__main__":
     APP.run(debug=True, host="0.0.0.0", port=env.get("PORT", 3001))

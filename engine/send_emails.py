@@ -43,10 +43,10 @@ class HandleEmail():
 
         # parses first part of email (part before the @)
         # later used to personally great each user
-        regex_str = r'^([^@]+)@[^@]+$'
-        matchobj = re.search(regex_str, email[0])
-        # group(1) is used to only select for the first part
-        first_part_of_email = matchobj.group(1)
+        # regex_str = r'^([^@]+)@[^@]+$'
+        # matchobj = re.search(regex_str, email[0])
+        # # group(1) is used to only select for the first part
+        # first_part_of_email = matchobj.group(1)
 
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
@@ -55,7 +55,6 @@ class HandleEmail():
         subject = "Happy Saturday!"
 
         mail_settings = MailSettings()
-        mail_settings.sandbox_mode = SandBoxMode(True)
 
         content = Content("text/plain", "Someone submitted a survey!")
         mail = Mail(from_email, subject, to_email, content)
