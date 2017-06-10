@@ -36,7 +36,7 @@ deployment:
       # updates variable BUILD_NUM with CIRCLE_BUILD env variable
       - sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/prod/Dockerrun.aws.json
       # this is needed to set aws login keys 
-      - bash ./deploy/setup-eb.sh
+      - bash ./.deploy/setup-eb.sh
       # goes into folder where Dockerrun.aws.json and .elasticbeanstalk config for
       # production is stored 
       - cd .deploy/prod && eb deploy -l $CIRCLE_BUILD_NUM
