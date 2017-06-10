@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, _app_ctx_stack
 from flask_cors import cross_origin, CORS
 from jose import jwt
+from engine.send_emails import HandleEmail
 
 load_dotenv(path.join(path.dirname(__file__), ".env"))
 AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
@@ -203,6 +204,9 @@ def insert_response():
 
     for doc in db_handler.Db_Handler().responses.find():
        print(doc)
+    HandleEmail().send("russell@deephire.io")
+    HandleEmail().send("steve@deephire.io")
+    HandleEmail().send("nick@deephire.io")
     return ('{"code":"success"')
 
 
