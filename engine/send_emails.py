@@ -43,24 +43,28 @@ class HandleEmail():
         destination_email = email
 
         if contents != "No contents has been entered":
+            
+            try:
+                submitter_email = contents["userInfo"]['email']
+                submitter_org = contents["userInfo"]['org']
+                submitter_position = contents["userInfo"]['positionTitle']
+                submitter_manager = contents["userInfo"]['isManager']
 
-            submitter_email = contents["userInfo"]['email']
-            submitter_org = contents["userInfo"]['org']
-            submitter_position = contents["userInfo"]['positionTitle']
-            submitter_manager = contents["userInfo"]['isManager']
+                # creates a list answers that contains all of the answers
+                answers = [answer[0]["response"]
+                           for answer in contents["responses"]]
 
-            # creates a list answers that contains all of the answers
-            answers = [answer[0]["response"]
-                       for answer in contents["responses"]]
+                # changes list to a string with huge spaces between the questions
+                answers = "\n".join(answers)
 
-            # changes list to a string with huge spaces between the questions
-            answers = "\n".join(answers)
-
-            contents = "submitter_email = " + submitter_email + "\n" + \
-                "submitter_org = " + submitter_org + "\n" + \
-                "submitter_position = " + submitter_position + "\n" + \
-                "submitter_manager = " + submitter_manager + "\n" + \
-                answers
+                contents = "submitter_email = " + submitter_email + "\n" + \
+                    "submitter_org = " + submitter_org + "\n" + \
+                    "submitter_position = " + submitter_position + "\n" + \
+                    "submitter_manager = " + submitter_manager + "\n" + \
+                    answers
+            except:
+                contents = "there was an error with the json"
+                print("there was an error with the json")
 
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
