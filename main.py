@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, _app_ctx_stack
 from flask_cors import cross_origin, CORS
 from jose import jwt
+from engine.send_emails import HandleEmail
 
 load_dotenv(path.join(path.dirname(__file__), ".env"))
 AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
@@ -93,7 +94,7 @@ def requires_auth(f):
     def decorated(*args, **kwargs):
         token = get_token_auth_header()
         jsonurl = urlopen("https://" + AUTH0_DOMAIN +
-                                 "/.well-known/jwks.json")
+                          "/.well-known/jwks.json")
         jwks = json.loads(jsonurl.read())
         unverified_header = jwt.get_unverified_header(token)
         rsa_key = {}
@@ -188,21 +189,23 @@ def get_questionnaire():
     return dumps(questionnaire)
 
 
-@APP.route("/secured/api/insert_response", methods = ['GET', 'POST'])
+@APP.route("/secured/api/insert_response", methods=['GET', 'POST'])
 @cross_origin(headers=["Content-Type", "Authorization"])
 def insert_response():
     """Insert a survey question response to database
     """
     data = request.get_data().decode('utf-8')
-    
-    test=json.loads(data)
-    print(test)
 
+    test = json.loads(data)
+    print(test)
 
     db_handler.Db_Handler().insert_one_response(test)
 
     for doc in db_handler.Db_Handler().responses.find():
-       print(doc)
+        print(doc)
+    HandleEmail().send("russell@deephire.io", test)
+    HandleEmail().send("steve@deephire.io", test)
+    HandleEmail().send("nick@deephire.io", test)
     return ('{"code":"success"')
 
 
@@ -215,7 +218,6 @@ def secured_private_ping():
     if requires_scope("read:agenda"):
         return "All good. You're authenticated and the access token has the appropriate scope"
     return "You don't have access to this resource"
-
 
 if __name__ == "__main__":
     APP.run(debug=True, host="0.0.0.0", port=env.get("PORT", 3001))

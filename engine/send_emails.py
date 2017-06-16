@@ -3,7 +3,7 @@
 import sendgrid
 import os
 from sendgrid.helpers.mail import Email, Content, Mail, MailSettings, SandBoxMode
-import re
+
 
 try:
     from engine.parse_files import ParseData
@@ -12,52 +12,73 @@ except:
 
 
 class HandleEmail():
+
     def __init__(self):
         pass
 
-    def send(self, email):
+    def send(self, email, contents="No contents has been entered"):
 
-        data = {
-            "personalizations": [{
-                "to": [{
-                    "email": "john@example.com"
-                }],
-                "subject": "Hello, World!"
-            }],
-            "from": {
-                "email": "John Doe"
-            },
-            "content": {
-                "type": "text",
-                "value": "Hello, World!"
-            },
-            "mail_settings": {
-                "sandbox_mode": {
-                    "enable": True
-                }
-            }
-        }
+        # data = {
+        #     "personalizations": [{
+        #         "to": [{
+        #             "email": "john@example.com"
+        #         }],
+        #         "subject": "Hello, World!"
+        #     }],
+        #     "from": {
+        #         "email": "John Doe"
+        #     },
+        #     "content": {
+        #         "type": "text",
+        #         "value": "Hello, World!"
+        #     },
+        #     "mail_settings": {
+        #         "sandbox_mode": {
+        #             "enable": True
+        #         }
+        #     }
+        # }
 
         # set outgoing email from parsed resume
-        destination_emails = email[0]
+        destination_email = email
 
-        # parses first part of email (part before the @)
-        # later used to personally great each user
-        regex_str = r'^([^@]+)@[^@]+$'
-        matchobj = re.search(regex_str, email[0])
-        # group(1) is used to only select for the first part
-        first_part_of_email = matchobj.group(1)
+        if contents != "No contents has been entered":
+            
+            try:
+                submitter_email = contents["userInfo"]['email']
+                submitter_org = contents["userInfo"]['org']
+                submitter_position = contents["userInfo"]['positionTitle']
+                submitter_manager = contents["userInfo"]['isManager']
+
+                # creates a list answers that contains all of the answers
+                answers = [answer[0]["response"]
+                           for answer in contents["responses"]]
+
+                # changes list to a string with huge spaces between the questions
+                answers = "\n".join(answers)
+
+                contents = "submitter_email = " + submitter_email + "\n" + \
+                    "submitter_org = " + submitter_org + "\n" + \
+                    "submitter_position = " + submitter_position + "\n" + \
+                    "submitter_manager = " + submitter_manager + "\n" + \
+                    answers
+            except:
+                contents = "there was an error with the json"
+                print("there was an error with the json")
 
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
-        from_email = Email("Russsell@DeepHire.io")
-        to_email = Email(destination_emails)
-        subject = "Happy Saturday!"
+        from_email = Email("Notify@DeepHire.io")
+        to_email = Email(destination_email)
+
+        if submitter_email:
+            subject = submitter_email
+        else:
+            subject = "Survery submitted (but no email attached)"
 
         mail_settings = MailSettings()
-        mail_settings.sandbox_mode = SandBoxMode(True)
 
-        content = Content("text/plain", "Hello " + first_part_of_email + "!")
+        content = Content("text/plain", contents)
         mail = Mail(from_email, subject, to_email, content)
         mail.mail_settings = mail_settings
         response = sg.client.mail.send.post(request_body=mail.get())
