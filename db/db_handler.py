@@ -11,11 +11,14 @@ class Db_Handler():
         # can also pass in url to db as a string
         passw = os.environ.get('MONGO_PASS')
         usrn = os.environ.get('MONGO_NAME')
-        self.client = pymongo.MongoClient("mongodb://"+ usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")  # can also pass in url to db as a string
+        # can also pass in url to db as a string
+        self.client = pymongo.MongoClient(
+            "mongodb://" + usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")
         self.questionnaires = self.client.deephire.questionnaires
         self.questions = self.client.deephire.questions
         self.users = self.client.deephire.users
         self.orgs = self.client.deephire.orgs
+        # new roos code
 
         self.responses = self.client.deephire.responses
 
@@ -131,22 +134,22 @@ class Db_Handler():
         }])
         # yapf: disable
         survey = {
-         "questions":
-             [
-               {"text" : "question 1"},
-               {"text" : "question 2"},
-               {"text" : "question 3"},
-               {"text" : "question 4"},
-               {"text" : "question 5"},
-               {"text" : "question 6"},
-               {"text" : "question 7"},
-               {"text" : "question 8"},
-               {"text" : "question 9"},
-               {"text" : "question 10"},
-               {"text" : "question 12"}
-             ],
-          "name": "Culture Assessment Test"
-         }
+            "questions":
+            [
+                 {"text": "question 1"},
+                 {"text": "question 2"},
+                {"text": "question 3"},
+                {"text": "question 4"},
+                {"text": "question 5"},
+                {"text": "question 6"},
+                {"text": "question 7"},
+                {"text": "question 8"},
+                {"text": "question 9"},
+                {"text": "question 10"},
+                {"text": "question 12"}
+            ],
+            "name": "Culture Assessment Test"
+        }
         # yapf: enable
         self.questionnaires.insert_one(survey)
 
@@ -169,8 +172,10 @@ class Db_Handler():
     def get_total_responses(self, data):
         return self.responses({org: data.org})
 
-    def register_user(self, data):
-        self.users.insert_one(data)
+    def register_user(self, email, data):
+        key = {"email": email}
+        self.users.update(key, data, True)
+        # self.users.insert_one(data)
 
     def register_org(self, data):
         self.orgs.insert_one(data)
@@ -201,15 +206,25 @@ class Db_Handler():
     def insert_one_response(self, data):
         self.responses.insert_one(data)
 
-if __name__ == "__main__":
-  user = {
-      "first": "Russell",
-      "last": "Ratcliffe",
-      "email": "russell@deephire.io",
-      "org": "DeepHire"
-  }
+    def lookup_user_by_id(self, user_id):
+        user_data = Db_Handler().users.find_one(ObjectId(user_id))
+        return user_data
 
-  handler = Db_Handler()
-  #handler.register_user(user)
-  #handler.initialize_questionnaire()
-  print(dumps(handler.get_questionnaire('DeepHire')))
+
+if __name__ == "__main__":
+    import datetime
+    user = {
+        "first": "Russell",
+        "last": "Ratcliffe",
+        "email": "russell@deephire.io",
+        "org": "DeepHire",
+        "time": datetime.datetime.now()
+
+    }
+
+    handler = Db_Handler()
+    # handler.register_user(user["email"], user)
+    x = '595aa8fefd83e97fbceac9e0'
+    print(handler.lookup_user_by_id(x))
+    # handler.users.delete_many({"first": "Steven"})
+    # handler.initialize_questionnaire()

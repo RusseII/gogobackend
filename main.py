@@ -34,6 +34,26 @@ def handle_error(error, status_code):
     return resp
 
 
+@APP.route("/api/create_account", methods=['GET', 'POST'])
+@cross_origin(headers=["Content-Type", "Authorization"])
+def create_account():
+    data = request.get_data().decode('utf-8')
+    data = json.loads(data)
+    print(data["email"])
+    return data['email']
+
+
+@APP.route("/api/lookup_user_by_id", methods=['GET', 'POST'])
+@cross_origin(headers=["Content-Type", "Authorization"])
+def lookup_user_by_id():
+    data = request.get_data().decode('utf-8')
+    data = json.loads(data)
+    user_id = data["user_id"]
+    user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
+    print(user_info)
+    return str(user_info)
+
+
 def get_token_auth_header():
     """Obtains the access token from the Authorization Header
     """
