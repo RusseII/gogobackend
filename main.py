@@ -39,8 +39,11 @@ def handle_error(error, status_code):
 def create_account():
     data = request.get_data().decode('utf-8')
     data = json.loads(data)
-    print(data["email"])
-    return data['email']
+    email = data["email"]
+    db_handler.Db_Handler().register_user(email, data)
+    user_id = str(db_handler.Db_Handler().get_id_from_email(email))
+    # HandleEmail().send(email, user_id)
+    return(user_id)
 
 
 @APP.route("/api/lookup_user_by_id", methods=['GET', 'POST'])

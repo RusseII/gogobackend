@@ -16,75 +16,42 @@ class HandleEmail():
     def __init__(self):
         pass
 
-    def send(self, email, contents="No contents has been entered"):
-
-        # data = {
-        #     "personalizations": [{
-        #         "to": [{
-        #             "email": "john@example.com"
-        #         }],
-        #         "subject": "Hello, World!"
-        #     }],
-        #     "from": {
-        #         "email": "John Doe"
-        #     },
-        #     "content": {
-        #         "type": "text",
-        #         "value": "Hello, World!"
-        #     },
-        #     "mail_settings": {
-        #         "sandbox_mode": {
-        #             "enable": True
-        #         }
-        #     }
-        # }
-
-        # set outgoing email from parsed resume
-        destination_email = email
-
-        if contents != "No contents has been entered":
-            
-            try:
-                submitter_email = contents["userInfo"]['email']
-                submitter_org = contents["userInfo"]['org']
-                submitter_position = contents["userInfo"]['positionTitle']
-                submitter_manager = contents["userInfo"]['isManager']
-
-                # creates a list answers that contains all of the answers
-                answers = [answer[0]["response"]
-                           for answer in contents["responses"]]
-
-                # changes list to a string with huge spaces between the questions
-                answers = "\n".join(answers)
-
-                contents = "submitter_email = " + submitter_email + "\n" + \
-                    "submitter_org = " + submitter_org + "\n" + \
-                    "submitter_position = " + submitter_position + "\n" + \
-                    "submitter_manager = " + submitter_manager + "\n" + \
-                    answers
-            except:
-                contents = "there was an error with the json"
-                print("there was an error with the json")
-
+    def send(self, email, unique_id=None, contents="No contents has been entered"):
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
-        from_email = Email("Notify@DeepHire.io")
-        to_email = Email(destination_email)
 
-        if submitter_email:
-            subject = submitter_email
-        else:
-            subject = "Survery submitted (but no email attached)"
+        HtmlFile = open("engine/static/template.html", 'r', encoding='utf-8')
+        source_code = HtmlFile.read()
+        source_code = source_code.replace(
+            "REPLACE", "https://www.deephire.io/login/" + unique_id)
 
-        mail_settings = MailSettings()
-
-        content = Content("text/plain", contents)
-        mail = Mail(from_email, subject, to_email, content)
-        mail.mail_settings = mail_settings
-        response = sg.client.mail.send.post(request_body=mail.get())
+        data = {
+            "personalizations": [
+                {
+                    "to": [
+                        {
+                            "email": email
+                        } # ,
+                        # {"email": "rratcliffe57@gmail.com"
+                        #  }
+                    ],
+                    "subject": "Thanks for making an account! Please confirm email."
+                }
+            ],
+            "from": {
+                "email": "Russell@DeepHire.io"
+            },
+            "content": [
+                {
+                    "type": "text/html",
+                    "value": source_code
+                }
+            ]
+        }
+        response = sg.client.mail.send.post(request_body=data)
         print(response.status_code)
-        # print(response.body)
-        # print(response.headers)
+        print(response.body)
+        print(response.headers)
 
     def send_email_to_parsed(self, file):
         pd = ParseData()
@@ -94,5 +61,4 @@ class HandleEmail():
 
 
 if __name__ == '__main__':
-    print(HandleEmail().send(
-        ["rwr21@zips.uakron.edu", "rratcliffe57@gmail.com"]))
+    print(HandleEmail().send("rwr21@zips.uakron.edu"))
