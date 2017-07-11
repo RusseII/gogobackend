@@ -12,7 +12,7 @@ jobs:
       - run:
        
         
-        
+        name: test
         command: 'docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .'
     # lots into my docker account to pull private images and push
     # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
