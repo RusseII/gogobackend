@@ -10,11 +10,10 @@ jobs:
     steps:
        
       - run:
-       
-        
-        name: test
-        command: 'docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .'
+          name: update-npm
+          command: 'docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .'
     # lots into my docker account to pull private images and push
+        
     # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     # --rm=false is to keep circleci from getting errors, $CIRCLE_BUILDNUM  
     # is an environment variable kept by circleci. Used for source control
