@@ -1,4 +1,5 @@
 #commit all this stuff!!
+version: 2
 machine:
   services:
     # nothing special, just says we are using docker
