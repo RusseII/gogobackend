@@ -35,7 +35,7 @@ def handle_error(error, status_code):
     return resp
 
 
-@APP.route("/create_account", methods=['GET', 'POST'])
+@APP.route("/v1/create_account", methods=['POST'])
 @cross_origin(headers=["Content-Type", "Authorization"])
 def create_account():
     data = request.get_data().decode('utf-8')
@@ -58,7 +58,7 @@ def create_account():
 #     return str(user_info)
 
 
-@APP.route("/lookup_user_by_id/<user_id>", methods=['GET', 'POST'])
+@APP.route("/v1/lookup_user_by_id/<user_id>", methods=['GET'])
 @cross_origin(headers=["Content-Type", "Authorization"])
 def lookup_user_by_id2(user_id):
     user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
@@ -66,9 +66,9 @@ def lookup_user_by_id2(user_id):
     return str(user_info)
 
 
-@APP.route("/get_questions", methods=['GET', 'POST'])
+@APP.route("/vi/survey/get_questions/<lookup>", methods=['GET'])
 @cross_origin(headers=["Content-Type", "Authorization"])
-def get_questions():
+def get_questions(lookup):
     questions = db_handler.Db_Handler().get_survey_questions()
     return str(questions)
 
