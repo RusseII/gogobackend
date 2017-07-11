@@ -15,97 +15,107 @@ class Db_Handler():
         self.client = pymongo.MongoClient(
             "mongodb://" + usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")
         self.questionnaires = self.client.deephire.questionnaires
-        self.questions = self.client.deephire.questions
+
         self.users = self.client.deephire.users
         self.orgs = self.client.deephire.orgs
-        self.surveys = self.client.deephire.surveys
+        self.questions = self.client.deephire.questions
         # new roos code
 
         self.responses = self.client.deephire.responses
 
     def initialize_questionnaire(self):
 
-            placeholder = {"survery_one": {"survery_questions": [{
-                "_id":
-                ObjectId("5931a9fb9c9870798ac4d4e3"),
-                "creator":
-                "Deephire",
-                "text":
-                "Do you know what is expected of you at work?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ecda"),
-                "creator":
-                "Deephire",
-                "text":
-                "Do you have the materials and equipment to do your work right?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ecdb"),
-                "creator":
-                "Deephire",
-                "text":
-                "In the last seven days, have you received recognition or praise for dsoing good work?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ecdc"),
-                "creator":
-                "Deephire",
-                "text":
-                "Does your supervisor, or someone at work, seem to care about you as a person?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ecdd"),
-                "creator":
-                "Deephire",
-                "text":
-                "Is there someone at work who encourages your development?"
-            }, {
-                "_id": ObjectId("5931ab77f25839ce7e73ecde"),
-                "creator": "Deephire",
-                "text": "At work, do your opinions seem to count?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ecdf"),
-                "creator":
-                "Deephire",
-                "text":
-                "Does the mission/purpose of your company make you feel your job is important?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ece0"),
-                "creator":
-                "Deephire",
-                "text":
-                "Are your associates (fellow employees) committed to doing quality work?"
-            }, {
-                "_id": ObjectId("5931ab77f25839ce7e73ece1"),
-                "creator": "Deephire",
-                "text": "Do you have a best friend at work?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ece2"),
-                "creator":
-                "Deephire",
-                "text":
-                "In the last six months, has someone at work talked to you about your progress?"
-            }, {
-                "_id":
-                ObjectId("5931ab77f25839ce7e73ece3"),
-                "creator":
-                "Deephire",
-                "text":
-                "In the last year, have you had opportunities to learn and grow?"
-            }, {
-                "_id":
-                ObjectId("5931abf3f25839ce7e73ece4"),
-                "creator":
-                "Deephire",
-                "text":
-                "At work, do you have the opportunity to do what you do best every day?"
-            }]}}
+        placeholder = {"questions": [{
+            "_id":
+            ObjectId("5931a9fb9c9870798ac4d4e3"),
+            "creator":
+            "Deephire",
+            "metric": "Recognition",
+            "sub_metric": "Recognition Frequency",
+            "text":
+            "I am happy with how frequently I am recognized."
+        }, {
+            "_id":
+            ObjectId("5931ab77f25839ce7e73ecda"),
+            "creator":
+            "Deephire",
+            "metric": "Ambassadorship",
+            "sub_metric": "Championing",
+            "text":
+            """If you were in charge of the “best places to work awards”, 
+            would you nominate your organization?"""
+        }, {
+            "_id":
+            ObjectId("5931ab77f25839ce7e73ecdb"),
+            "creator":
+            "Deephire",
+            "metric": "Feedback",
+            "sub_metric": "Feedback Quality",
+            "text":
+            "The feedback I receive helps me grow and develop."
+        },
+            # {
+            #     "_id":
+            #     ObjectId("5931ab77f25839ce7e73ecdc"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "Does your supervisor, or someone at work, seem to care about you as a person?"
+            # }, {
+            #     "_id":
+            #     ObjectId("5931ab77f25839ce7e73ecdd"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "Is there someone at work who encourages your development?"
+            # }, {
+            #     "_id": ObjectId("5931ab77f25839ce7e73ecde"),
+            #     "creator": "Deephire",
+            #     "text": "At work, do your opinions seem to count?"
+            # }, {
+            #     "_id":
+            #     ObjectId("5931ab77f25839ce7e73ecdf"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "Does the mission/purpose of your company make you feel your job is important?"
+            # }, {
+            #     "_id":
+            #     ObjectId("5931ab77f25839ce7e73ece0"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "Are your associates (fellow employees) committed to doing quality work?"
+            # }, {
+            #     "_id": ObjectId("5931ab77f25839ce7e73ece1"),
+            #     "creator": "Deephire",
+            #     "text": "Do you have a best friend at work?"
+            # }, {
+            #     "_id":
+            #     ObjectId("5931ab77f25839ce7e73ece2"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "In the last six months, has someone at work talked to you about your progress?"
+            # }, {
+            #     "_id":
+            #     ObjectId("5931ab77f25839ce7e73ece3"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "In the last year, have you had opportunities to learn and grow?"
+            # }, {
+            #     "_id":
+            #     ObjectId("5931abf3f25839ce7e73ece4"),
+            #     "creator":
+            #     "Deephire",
+            #     "text":
+            #     "At work, do you have the opportunity to do what you do best every day?"
+            #
+            #}
+        ]}
 
-            self.surveys.insert(placeholder)
+        self.questions.insert(placeholder)
 
         # self.questionnaires.insert([{
         #     "org":
@@ -218,6 +228,10 @@ class Db_Handler():
         data = Db_Handler().users.find_one({"email": email})
         return data["_id"]
 
+    def get_survey_questions(self):
+        data = Db_Handler().questions.find_one({})
+        return data
+
 
 if __name__ == "__main__":
     import datetime
@@ -233,9 +247,22 @@ if __name__ == "__main__":
     handler = Db_Handler()
     # handler.register_user(user["email"], user)
     x = '595aa8fefd83e97fbceac9e0'
-    handler.initialize_questionnaire()
+    # handler.initialize_questionnaire()
+    print(handler.get_survey_questions())
     # print(handler.lookup_user_by_id(x))
     # print(handler.get_id_from_email("russell@deephire.io"))
-    # handler.users.delete_many({})
+    # handler.questions.delete_many({})
+    # handler.questions.delete_many({})
     # handler.users.delete_many({"first": "Steven"})
     # handler.initialize_questionnaire()
+{"_id": ObjectId("5964c728202daf0a637ab8b0"),
+ "questions": [{"_id": ObjectId("5931a9fb9c9870798ac4d4e3"),
+                "creator": "Deephire", "metric": "Recognition",
+                "sub_metric": "Recognition Frequency",
+                "text": "I am happy with how frequently I am recognized."},
+               {"_id": ObjectId("5931ab77f25839ce7e73ecda"),
+
+            "creator": "Deephire", "metric": "Ambassadorship",
+                "sub_metric": "Championing", "text": "If you were in charge of the “best places to work awards”,would you nominate your organization?"},
+               {"_id": ObjectId("5931ab77f25839ce7e73ecdb"),
+                "creator": "Deephire", "metric": "Feedback", "sub_metric": "Feedback Quality", "text": "The feedback I receive helps me grow and develop."}]}

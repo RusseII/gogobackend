@@ -34,7 +34,7 @@ def handle_error(error, status_code):
     return resp
 
 
-@APP.route("/api/create_account", methods=['GET', 'POST'])
+@APP.route("/create_account", methods=['GET', 'POST'])
 @cross_origin(headers=["Content-Type", "Authorization"])
 def create_account():
     data = request.get_data().decode('utf-8')
@@ -43,10 +43,10 @@ def create_account():
     db_handler.Db_Handler().register_user(email, data)
     user_id = str(db_handler.Db_Handler().get_id_from_email(email))
     HandleEmail().send(email, user_id)
-    return(user_id)
+    return(str({"user_id": user_id}))
 
 
-@APP.route("/api/lookup_user_by_id", methods=['GET', 'POST'])
+@APP.route("/lookup_user_by_id", methods=['GET', 'POST'])
 @cross_origin(headers=["Content-Type", "Authorization"])
 def lookup_user_by_id():
     data = request.get_data().decode('utf-8')
@@ -55,6 +55,13 @@ def lookup_user_by_id():
     user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
     print(user_info)
     return str(user_info)
+
+
+@APP.route("/get_questions", methods=['GET', 'POST'])
+@cross_origin(headers=["Content-Type", "Authorization"])
+def get_questions():
+    questions = db_handler.Db_Handler().get_survey_questions()
+    return str(questions)
 
 
 def get_token_auth_header():
