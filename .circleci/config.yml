@@ -12,8 +12,8 @@ jobs:
       command: pip install awsebcli
     # installs the eb tool, which is needed to deploy from command line
    -run
-    name: build_docker_image
-    command: docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .
+      name: build_docker_image
+      command: docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .
     # lots into my docker account to pull private images and push
     # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     # --rm=false is to keep circleci from getting errors, $CIRCLE_BUILDNUM  
