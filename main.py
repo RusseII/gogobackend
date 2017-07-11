@@ -66,7 +66,7 @@ def lookup_user_by_id2(user_id):
     return str(user_info)
 
 
-@APP.route("/vi/survey/get_questions/<lookup>", methods=['GET'])
+@APP.route("/v1/survey/get_questions/<lookup>", methods=['GET'])
 @cross_origin(headers=["Content-Type", "Authorization"])
 def get_questions(lookup):
     questions = db_handler.Db_Handler().get_survey_questions()
