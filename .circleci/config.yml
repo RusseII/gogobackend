@@ -11,11 +11,9 @@ jobs:
        
       - run:
        
-        command: pip install awsebcli
         
-        command: echo "test"
         
-        #command: docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .
+        command: docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .
     # lots into my docker account to pull private images and push
     # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     # --rm=false is to keep circleci from getting errors, $CIRCLE_BUILDNUM  
