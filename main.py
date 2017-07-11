@@ -42,7 +42,7 @@ def create_account():
     email = data["email"]
     db_handler.Db_Handler().register_user(email, data)
     user_id = str(db_handler.Db_Handler().get_id_from_email(email))
-    # HandleEmail().send(email, user_id)
+    HandleEmail().send(email, user_id)
     return(user_id)
 
 
