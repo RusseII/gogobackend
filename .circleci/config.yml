@@ -13,7 +13,7 @@ jobs:
        
         command: pip install awsebcli
         
-        command: echo "test
+        command: echo "test"
         
         command: docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM".
     # lots into my docker account to pull private images and push
