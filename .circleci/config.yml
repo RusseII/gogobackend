@@ -1,27 +1,20 @@
 #commit all this stuff!!
 version: 2
-jobs:
+jobs:   
   build:
-    working_directory: ~/mern-starter
-    # The primary container is an instance of the first list image listed. Your build commands run in this container.
+    working_directory: ~/gogobackend
+
     docker:
-      - image: circleci/node:4.8.2
-    # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.   
-      - image: mongo:3.4.4
-    steps:
-      - checkout
-      - run:
-          name: update-npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: install-npm-wee
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - .node_modules
+      - image: circleci/python3.4.6
+  
+  steps:
+    - run:
+      name: install_aws_tool
+      command: pip install awsebcli
+    # installs the eb tool, which is needed to deploy from command line
+   - run:
+      name: build_docker_image
+      command: docker build --rm=false -t "deephire/backend:$CIRCLE_BUILD_NUM" .
     # lots into my docker account to pull private images and push
     # - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
     # --rm=false is to keep circleci from getting errors, $CIRCLE_BUILDNUM  
