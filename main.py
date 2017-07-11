@@ -16,6 +16,7 @@ from flask import Flask, request, jsonify, _app_ctx_stack
 from flask_cors import cross_origin, CORS
 from jose import jwt
 from engine.send_emails import HandleEmail
+from flask import request
 
 load_dotenv(path.join(path.dirname(__file__), ".env"))
 AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
@@ -46,12 +47,20 @@ def create_account():
     return(str({"user_id": user_id}))
 
 
-@APP.route("/lookup_user_by_id", methods=['GET', 'POST'])
+# @APP.route("/lookup_user_by_id", methods=['GET', 'POST'])
+# @cross_origin(headers=["Content-Type", "Authorization"])
+# def lookup_user_by_id():
+#     data = request.get_data().decode('utf-8')
+#     data = json.loads(data)
+#     user_id = data["user_id"]
+#     user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
+#     print(user_info)
+#     return str(user_info)
+
+
+@APP.route("/lookup_user_by_id/<user_id>", methods=['GET', 'POST'])
 @cross_origin(headers=["Content-Type", "Authorization"])
-def lookup_user_by_id():
-    data = request.get_data().decode('utf-8')
-    data = json.loads(data)
-    user_id = data["user_id"]
+def lookup_user_by_id2(user_id):
     user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
     print(user_info)
     return str(user_info)
