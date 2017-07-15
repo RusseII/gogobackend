@@ -73,6 +73,13 @@ def get_questions(lookup):
     return str(questions)
 
 
+@APP.route("/v1/survey/get_company/<email_or_id>", methods=['GET'])
+@cross_origin(headers=["Content-Type", "Authorization"])
+def get_company(email_or_id):
+    company = db_handler.Db_Handler().get_company_from_email(email_or_id)
+    return str({"company": company})
+
+
 def get_token_auth_header():
     """Obtains the access token from the Authorization Header
     """

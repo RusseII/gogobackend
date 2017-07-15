@@ -25,200 +25,334 @@ class Db_Handler():
 
     def initialize_questionnaire(self):
 
-        placeholder = {"questions": [{
-            "_id":
-            ObjectId("5931a9fb9c9870798ac4d4e3"),
-            "creator":
-            "Deephire",
-            "metric": "Recognition",
-            "sub_metric": "Recognition Frequency",
-            "text":
-            "I am happy with how frequently I am recognized."
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecda"),
-            "creator":
-            "Deephire",
-            "metric": "Ambassadorship",
-            "sub_metric": "Championing",
-            "text":
-            """If you were in charge of the “best places to work awards”, 
-            would you nominate your organization?"""
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecdb"),
-            "creator":
-            "Deephire",
-            "metric": "Feedback",
-            "sub_metric": "Feedback Quality",
-            "text":
-            "The feedback I receive helps me grow and develop."
-        },
-            # {
-            #     "_id":
-            #     ObjectId("5931ab77f25839ce7e73ecdc"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "Does your supervisor, or someone at work, seem to care about you as a person?"
-            # }, {
-            #     "_id":
-            #     ObjectId("5931ab77f25839ce7e73ecdd"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "Is there someone at work who encourages your development?"
-            # }, {
-            #     "_id": ObjectId("5931ab77f25839ce7e73ecde"),
-            #     "creator": "Deephire",
-            #     "text": "At work, do your opinions seem to count?"
-            # }, {
-            #     "_id":
-            #     ObjectId("5931ab77f25839ce7e73ecdf"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "Does the mission/purpose of your company make you feel your job is important?"
-            # }, {
-            #     "_id":
-            #     ObjectId("5931ab77f25839ce7e73ece0"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "Are your associates (fellow employees) committed to doing quality work?"
-            # }, {
-            #     "_id": ObjectId("5931ab77f25839ce7e73ece1"),
-            #     "creator": "Deephire",
-            #     "text": "Do you have a best friend at work?"
-            # }, {
-            #     "_id":
-            #     ObjectId("5931ab77f25839ce7e73ece2"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "In the last six months, has someone at work talked to you about your progress?"
-            # }, {
-            #     "_id":
-            #     ObjectId("5931ab77f25839ce7e73ece3"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "In the last year, have you had opportunities to learn and grow?"
-            # }, {
-            #     "_id":
-            #     ObjectId("5931abf3f25839ce7e73ece4"),
-            #     "creator":
-            #     "Deephire",
-            #     "text":
-            #     "At work, do you have the opportunity to do what you do best every day?"
-            #
-            #}
-        ]}
+        placeholder = {
+            "_id": "5964c728202daf0a637ab8b0",
+            "questions": [
+                {
+                    "creator": "Deephire",
+                    "metric": "Recognition",
+                    "sub_metric": "Recognition Frequency",
+                    "text": "I feel I need to be recognized for my work more frequently. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Recognition",
+                    "sub_metric": "Recognition Frequency",
+                    "text": "I am receiving an appopriate amount of recognition. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Recognition",
+                    "sub_metric": "Recognition Quality",
+                    "text": "Upper management highlights achievements in the organization. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Recognition",
+                    "sub_metric": "Recognition Quality",
+                    "text": "My direct manager celebrates accomplishments with my peers. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Ambassadorship",
+                    "sub_metric": "Championing",
+                    "text": "I would recommend my friends to join my workplace. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Ambassadorship",
+                    "sub_metric": "Championing",
+                    "text": "I would refer my peers to work at my organization. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Ambassadorship",
+                    "sub_metric": "Pride",
+                    "text": "I feel proud to tell my friends and family about where I work. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Ambassadorship",
+                    "sub_metric": "Pride",
+                    "text": "I enjoy talking about my workplace to those not in the organization. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Feedback",
+                    "sub_metric": "Feedback Quality",
+                    "text": "After receiving feedback, I know exactly what I need to do in order to improve. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Feedback",
+                    "sub_metric": "Feedback Quality",
+                    "text": "Feedback I receive leaves me confused. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Feedback",
+                    "sub_metric": "Suggestions for Organization",
+                    "text": "I feel that my organization values my opinions and suggestions. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Feedback",
+                    "sub_metric": "Suggestions for Organization",
+                    "text": "When I voice my opinions and suggestions, I feel I make an impact. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Feedback",
+                    "sub_metric": "Feedback Frequency",
+                    "text": "I require more feedback to learn how to grow. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Feedback",
+                    "sub_metric": "Feedback Frequency",
+                    "text": "I am receiving an appropriate amount of feedback from my direct manager. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Peers",
+                    "sub_metric": "Collaboration between Peers",
+                    "text": "I work very well with my peers. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Peers",
+                    "sub_metric": "Collaboration between Peers",
+                    "text": "My peers and I finish tasks together in an efficient way.  "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Peers",
+                    "sub_metric": "Communication between Peers",
+                    "text": "I feel cautious when communicating with my peers. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Peers",
+                    "sub_metric": "Communication between Peers",
+                    "text": "I feel I can speak my mind honestly and openly with my peers. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Peers",
+                    "sub_metric": "Trust between Peers",
+                    "text": "I respect the people I work with. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Peers",
+                    "sub_metric": "Trust between Peers",
+                    "text": "There is a mutual respect between me and those I work with. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Manager",
+                    "sub_metric": "Collaboration with Manager",
+                    "text": "Working with my direct manager is frictionless. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Manager",
+                    "sub_metric": "Collaboration with Manager",
+                    "text": "My direct manager and I collaborate well together. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Manager",
+                    "sub_metric": "Communication with Manager",
+                    "text": "I know what to expect when I speak with my direct manager. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Manager",
+                    "sub_metric": "Communication with Manager",
+                    "text": "My direct manager freely shares his thoughts with the team. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Manager",
+                    "sub_metric": "Trust with Manager",
+                    "text": "I feel I can share my thoughts with my direct manager. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Relationship with Manager",
+                    "sub_metric": "Trust with Manager",
+                    "text": "I feel I have to 'hold back' when I speak with my direct manager. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Satisfaction",
+                    "sub_metric": "Compensation",
+                    "text": "For the amount I contribute to my organization, I feel appropriately compensated. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Satisfaction",
+                    "sub_metric": "Compensation",
+                    "text": "Taking into account my effort, skills, and experience - I am paid fairly. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Satisfaction",
+                    "sub_metric": "Role within Organization",
+                    "text": "My role and responsibilies are unclear to me. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Satisfaction",
+                    "sub_metric": "Role within Organization",
+                    "text": "I know exactly what is required of me at work. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Satisfaction",
+                    "sub_metric": "Workplace",
+                    "text": "I look forward to spending time at my workplace. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Satisfaction",
+                    "sub_metric": "Workplace",
+                    "text": "I enjoy spending time at my workplace. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Alignment",
+                    "sub_metric": "Values",
+                    "text": "My organization chooses what to do carefully, based on our values. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Alignment",
+                    "sub_metric": "Values",
+                    "text": "Decisions are made with my organization's values in mind. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Alignment",
+                    "sub_metric": "Vision & Mission",
+                    "text": "I think my organization is able to achieve its mission. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Alignment",
+                    "sub_metric": "Vision & Mission",
+                    "text": "The roadmap on how to achieve the vision of my organization is clear to everyone. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Alignment",
+                    "sub_metric": "Ethics & Social Responsibility",
+                    "text": "Everyone in my organization is treated fairly. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Alignment",
+                    "sub_metric": "Ethics & Social Responsibility",
+                    "text": "My organization treats people from all backgrounds fairly. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Happiness",
+                    "sub_metric": "Happiness at Work",
+                    "text": "After a day of work, I feel as if I've contributed to my organization's mission. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Happiness",
+                    "sub_metric": "Happiness at Work",
+                    "text": "I feel fulfillment from the work I accomplish at my organization. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Happiness",
+                    "sub_metric": "Work-Life Balance / MERGE",
+                    "text": "I feel supported by my workplace if personal issues arise. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Happiness",
+                    "sub_metric": "Work-Life Balance / MERGE",
+                    "text": "I am confident my organization will support me when personal or family issues arise. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Wellness",
+                    "sub_metric": "Personal Health",
+                    "text": "My organization actively tries to promote employee health and wellness. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Wellness",
+                    "sub_metric": "Personal Health",
+                    "text": "My organization promotes resources/programs to encourage employee wellness. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Wellness",
+                    "sub_metric": "Stress",
+                    "text": "I feel stressed out when it comes to work. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Wellness",
+                    "sub_metric": "Stress",
+                    "text": "I am too stressed out when it comes to my work. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Personal Growth",
+                    "sub_metric": "Autonomy",
+                    "text": "I feel micromanaged when it comes to my work. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Personal Growth",
+                    "sub_metric": "Autonomy",
+                    "text": "I need more independence when it comes to my work. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Personal Growth",
+                    "sub_metric": "Purpose",
+                    "text": "I feel that by working here, I contribute to a larger goal. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Personal Growth",
+                    "sub_metric": "Purpose",
+                    "text": "I feel that my work does not make a difference. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Personal Growth",
+                    "sub_metric": "Mastery",
+                    "text": "I can think of a handful of ways to grow within my organization. "
+                },
+                {
+                    "creator": "Deephire",
+                    "metric": "Personal Growth",
+                    "sub_metric": "Mastery",
+                    "text": "I have the opportunity to grow within my organization. "
+                }
+            ]
+        }
 
         self.questions.insert(placeholder)
-
-        # self.questionnaires.insert([{
-        #     "org":
-        #     "DeepHire",
-        #     "questions": [{
-        #         "question_id": ObjectId("5931a9fb9c9870798ac4d4e3")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ecda")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ecdb")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ecdc")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ecdd")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ecde")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ecdf")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ece0")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ece1")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ece2")
-        #     }, {
-        #         "question_id": ObjectId("5931ab77f25839ce7e73ece3")
-        #     }, {
-        #         "question_id": ObjectId("5931abf3f25839ce7e73ece4")
-        #     }]
-        # }])
-        # # yapf: disable
-        # survey = {
-        #     "questions":
-        #     [
-        #          {"text": "question 1"},
-        #          {"text": "question 2"},
-        #         {"text": "question 3"},
-        #         {"text": "question 4"},
-        #         {"text": "question 5"},
-        #         {"text": "question 6"},
-        #         {"text": "question 7"},
-        #         {"text": "question 8"},
-        #         {"text": "question 9"},
-        #         {"text": "question 10"},
-        #         {"text": "question 12"}
-        #     ],
-        #     "name": "Culture Assessment Test"
-        # }
-        # # yapf: enable
-        # self.questionnaires.insert_one(survey)
-
-    # def get_placeholder_analysis(self, data):
-    #     """This is placeholder analysis.
-    #        Demonstrates ability to match on n conditions on one collection
-    #     """
-
-    #     response = self.responses.aggregate([{
-    #         "$match": {
-    #             "$and": [{
-    #                 "responses": "i hate my bodsfsvss"
-    #             }, {
-    #                 "organization": "DeepHire"
-    #             }]
-    #         }
-    #     }])
-    #     return response
-
-    # def get_total_responses(self, data):
-    #     return self.responses({org: data.org})
 
     def register_user(self, email, data):
         key = {"email": email}
         for keys in data.keys():
             self.users.update(key, {"$set": {keys: data[keys]}}, True)
-
-    # def register_org(self, data):
-    #     self.orgs.insert_one(data)
-
-    # def get_questionnaire(self, org):
-    #     questions = self.questionnaires.aggregate([{
-    #         "$match": {
-    #             "org": org
-    #         }
-    #     }, {
-    #         "$unwind": "$questions"
-    #     }, {
-    #         "$lookup": {
-    #             "from": "questions",
-    #             "localField": "questions.question_id",
-    #             "foreignField": "_id",
-    #             "as": "ldefault"
-    #         }
-    #     }])
-    #     return questions
-
-    # def insert_question(self, data):
-    #     self.questions.insert_one(data)
-
-    # def get_custom_questions(self, data):
-    #     return self.questions.find({"creator": data.creator})
-
-    # def insert_one_response(self, data):
-    #     self.responses.insert_one(data)
+        survey_questions = Db_Handler().questions.find_one()
+            
+        print(survey_questions)
+        self.users.update(key, {"$set": {"questions": (survey_questions)}}, True)
 
     def lookup_user_by_id(self, user_id):
         user_data = Db_Handler().users.find_one(ObjectId(user_id))
@@ -231,6 +365,23 @@ class Db_Handler():
     def get_survey_questions(self):
         data = Db_Handler().questions.find_one({})
         return data
+
+    def get_company_from_email(self, email):
+        data = Db_Handler().users.find_one({"email": email})
+        print(data)
+        if data:
+            return data['company']
+        else:
+            return None
+
+    def insert_answers(self, data):
+        print(data)
+        email = data['email']
+        text = data['text']
+        key = {"$and": [{"email": email}, {"questions.text": text}]}
+        del data['email']
+        data = Db_Handler().users.update(
+            key, {'$set': {'questions.$.response': data['response']}})
 
 
 if __name__ == "__main__":
@@ -245,24 +396,18 @@ if __name__ == "__main__":
     }
 
     handler = Db_Handler()
-    # handler.register_user(user["email"], user)
+    handler.register_user(user["email"], user)
     x = '595aa8fefd83e97fbceac9e0'
     # handler.initialize_questionnaire()
-    print(handler.get_survey_questions())
+    # print(handler.get_survey_questions())
     # print(handler.lookup_user_by_id(x))
     # print(handler.get_id_from_email("russell@deephire.io"))
     # handler.questions.delete_many({})
     # handler.questions.delete_many({})
-    # handler.users.delete_many({"first": "Steven"})
+    #handler.users.delete_many({})
     # handler.initialize_questionnaire()
-{"_id": ObjectId("5964c728202daf0a637ab8b0"),
- "questions": [{"_id": ObjectId("5931a9fb9c9870798ac4d4e3"),
-                "creator": "Deephire", "metric": "Recognition",
-                "sub_metric": "Recognition Frequency",
-                "text": "I am happy with how frequently I am recognized."},
-               {"_id": ObjectId("5931ab77f25839ce7e73ecda"),
-
-            "creator": "Deephire", "metric": "Ambassadorship",
-                "sub_metric": "Championing", "text": "If you were in charge of the “best places to work awards”,would you nominate your organization?"},
-               {"_id": ObjectId("5931ab77f25839ce7e73ecdb"),
-                "creator": "Deephire", "metric": "Feedback", "sub_metric": "Feedback Quality", "text": "The feedback I receive helps me grow and develop."}]}
+    data = {"email": "russell@deephire.io", "metric": "Recognition",
+            "sub_metric": "Recognition Frequency",
+            "text":
+            "I am happy with how frequently I am recognized.", "response": 4}
+    #print(handler.insert_answers(data))
