@@ -95,11 +95,11 @@ def create_app(db):
         resp.status_code = 200
         return resp
 
-    @app.route("/v1.0/survey/companies/<id>", methods=['GET'])
+    @app.route("/v1.0/survey/companies/<email>", methods=['GET'])
     # gets company from id
     @cross_origin(headers=["Content-Type", "Authorization"])
-    def get_company(id):
-        company = Db_Handler(db).get_company_from_id(id)
+    def get_companies(email):
+        company = Db_Handler(db).get_company_from_email(email)
         resp = jsonify({"company": company})
         resp.status_code = 200
         return resp

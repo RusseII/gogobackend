@@ -12,7 +12,15 @@ class TestFlask:
         assert res.json['questions']
 
     def test_get_comapnies(self, client):
-        res = client.get(url_for('companies', id="596c382dfd83e97fbcd911d0"))
+        res = client.get(url_for('get_companies', email="john@deephire.io"))
         assert res.status_code == 200
         assert res.json
-        assert res.json['company'] == "deephire.io"
+        assert res.json['company'] == "deephire"
+        res = client.get(url_for('get_companies', email="russell@deephire.io"))
+        assert res.status_code == 200
+        assert res.json
+        assert res.json['company'] == "deephire"
+        res = client.get(url_for('get_companies', email="test@lolwtf.com"))
+        assert res.status_code == 200
+        assert res.json
+        assert res.json['company'] == None
