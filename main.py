@@ -42,7 +42,7 @@ def create_app(db):
     def create_account():
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
-        if not 'email' in request.json:
+        if 'email' not in request.json:
             return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
         data = request.json
         email = data['email']
@@ -58,7 +58,7 @@ def create_app(db):
     @app.route("/v1.0/accounts/<user_id>", methods=['GET'])
     # if get method lookup user with __ id
     # @cross_origin(headers=["Content-Type", "Authorization"])
-    def lookup_user_by_id(user_id):
+    def accounts_lookup_user_by_id(user_id):
         try:
             user_info = Db_Handler(db).lookup_user_by_id(user_id)
         except bson.errors.InvalidId as err:
@@ -71,18 +71,31 @@ def create_app(db):
 
     @app.route("/v1.0/answers", methods=['POST'])
     # @cross_origin(headers=["Content-Type", "Authorization"])
-    def submit_answers(user_id):
+    def submit_answers():
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
-        if 'user_id' or 'text' or 'response' not in request.json:
-            return handle_error("Request needs email and text keys.", 400)
+        if 'user_id' and'text' and 'response' not in request.json:
+            return handle_error("Request needs user_id, email and text keys.", 400)
 
-        data = request.json()
+        data = request.json
         user_id = data['user_id']
         text = data['text']
         response = data['response']
 
-        Db_Handler(db).insert_answers(user_id, text, response)
+        try:
+            x = Db_Handler(db).insert_answers(user_id, text, response)
+        except bson.errors.InvalidId as err:
+            return handle_error(str(err), 400)
+        print(x)
+        if x:
+            if x['updatedExisting'] is True:
+                resp = jsonify({"success": True})
+                resp.status_code = 201
+            else:
+                resp = jsonify(
+                    {"success": False, "message": "user does not exist"})
+                resp.status_code = 200
+        return resp
         # return HttpResponse(status=204)
 
     @app.route("/v1.0/survey/questions", methods=['GET'])
