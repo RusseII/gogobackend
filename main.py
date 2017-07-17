@@ -85,8 +85,8 @@ def create_app(db):
         Db_Handler(db).insert_answers(user_id, text, response)
         # return HttpResponse(status=204)
 
-    @app.route("/v1.0/survey/get_questions/", methods=['GET'])
-    @app.route("/v1.0/survey/get_questions/<lookup>", methods=['GET'])
+    @app.route("/v1.0/survey/questions", methods=['GET'])
+    @app.route("/v1.0/survey/questions/<lookup>", methods=['GET'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     # gets questions from first survey
     def get_questions(lookup=None):
@@ -96,7 +96,7 @@ def create_app(db):
         return resp
 
     @app.route("/v1.0/survey/companies/<id>", methods=['GET'])
-    # gets company from email
+    # gets company from id
     @cross_origin(headers=["Content-Type", "Authorization"])
     def get_company(id):
         company = Db_Handler(db).get_company_from_id(id)
