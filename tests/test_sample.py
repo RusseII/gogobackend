@@ -46,13 +46,8 @@ class TestSendGrid():
 
 
 class TestDbHandler():
-    db = Db_Handler()
-    db.questionnaires = db.client.test.questionnaires
-    db.users = db.client.test.users
-    db.orgs = db.client.test.orgs
-    db.questions = db.client.test.questions
-    db.responses = db.client.test.responses
-
+    db = Db_Handler("test")
+  
     russell = {
         "first": "Russell",
         "last": "Ratcliffe",

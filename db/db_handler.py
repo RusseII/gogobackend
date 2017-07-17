@@ -7,21 +7,25 @@ import os
 
 class Db_Handler():
 
-    def __init__(self):
+    def __init__(self, db):
         # can also pass in url to db as a string
         passw = os.environ.get('MONGO_PASS')
         usrn = os.environ.get('MONGO_NAME')
         # can also pass in url to db as a string
         self.client = pymongo.MongoClient(
             "mongodb://" + usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")
-        self.questionnaires = self.client.deephire.questionnaires
-
-        self.users = self.client.deephire.users
-        self.orgs = self.client.deephire.orgs
-        self.questions = self.client.deephire.questions
-        # new roos code
-
-        self.responses = self.client.deephire.responses
+        if db == "prod":
+            self.questionnaires = self.client.deephire.questionnaires
+            self.users = self.client.deephire.users
+            self.orgs = self.client.deephire.orgs
+            self.questions = self.client.deephire.questions
+            self.responses = self.client.deephire.responses
+        if db == "test":
+            self.questionnaires = self.client.test.questionnaires
+            self.users = self.client.test.users
+            self.orgs = self.client.test.orgs
+            self.questions = self.client.test.questions
+            self.responses = self.client.test.responses
 
     def initialize_questionnaire(self):
 
@@ -392,7 +396,7 @@ class Db_Handler():
         #key = {"questions.text": "I feel I need to be recognized for my work more frequently. "}
         data = self.users.update(
             key, {'$set': {'questions.$.response': response}})
-        
+
         return data
 
 

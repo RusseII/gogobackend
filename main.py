@@ -19,7 +19,7 @@ from jose import jwt
 from engine.send_emails import HandleEmail
 
 
-def create_app():
+def create_app(db):
 
     load_dotenv(path.join(path.dirname(__file__), ".env"))
     AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
@@ -36,7 +36,7 @@ def create_app():
         resp.status_code = status_code
         return resp
 
-    @app.route("/v1.0/accounts/", methods=['POST'])
+    @app.route("/v1.0/accounts", methods=['POST'])
     # if post method it creats an account
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def create_account():
@@ -46,11 +46,11 @@ def create_app():
             return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
         data = request.json
         email = data['email']
-        Db_Handler().register_user(email, data)
-        user_id = str(Db_Handler().get_id_from_email(
+        Db_Handler(db).register_user(email, data)
+        user_id = str(Db_Handler(db).get_id_from_email(
             email))
         # returns user_id for ease of use
-        company = Db_Handler().get_company_from_email(email)
+        company = Db_Handler(db).get_company_from_email(email)
         resp = jsonify({"user_id": user_id, "company": company})
         resp.status_code = 201
         return resp
@@ -60,7 +60,7 @@ def create_app():
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def lookup_user_by_id(user_id):
         try:
-            user_info = Db_Handler().lookup_user_by_id(user_id)
+            user_info = Db_Handler(db).lookup_user_by_id(user_id)
         except bson.errors.InvalidId as err:
             return handle_error(str(err), 400)
         if user_info:
@@ -82,15 +82,15 @@ def create_app():
         text = data['text']
         response = data['response']
 
-        Db_Handler().insert_answers(user_id, text, response)
+        Db_Handler(db).insert_answers(user_id, text, response)
         # return HttpResponse(status=204)
 
-    @app.route("/v1.0/survey/get_questions", methods=['GET'])
+    @app.route("/v1.0/survey/get_questions/", methods=['GET'])
     @app.route("/v1.0/survey/get_questions/<lookup>", methods=['GET'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     # gets questions from first survey
     def get_questions(lookup=None):
-        questions = Db_Handler().get_survey_questions()
+        questions = Db_Handler(db).get_survey_questions()
         resp = jsonify(questions)
         resp.status_code = 200
         return resp
@@ -99,7 +99,7 @@ def create_app():
     # gets company from email
     @cross_origin(headers=["Content-Type", "Authorization"])
     def get_company(id):
-        company = Db_Handler().get_company_from_id(id)
+        company = Db_Handler(db).get_company_from_id(id)
         resp = jsonify({"company": company})
         resp.status_code = 200
         return resp
@@ -249,7 +249,7 @@ def create_app():
     def get_questionnaire():
         """Get a survey from database
         """
-        questionnaire = Db_Handler().get_questionnaire("DeepHire")
+        questionnaire = Db_Handler(db).get_questionnaire("DeepHire")
         return dumps(questionnaire)
 
     @app.route("/secured/api/insert_response", methods=['GET', 'POST'])
@@ -262,9 +262,9 @@ def create_app():
         test = json.loads(data)
         print(test)
 
-        Db_Handler().insert_one_response(test)
+        Db_Handler(db).insert_one_response(test)
 
-        for doc in Db_Handler().responses.find():
+        for doc in Db_Handler(db).responses.find():
             print(doc)
         HandleEmail().send("russell@deephire.io", test)
         HandleEmail().send("steve@deephire.io", test)
