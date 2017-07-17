@@ -10,3 +10,4 @@ python-dotenv
 python-jose
 flask-cors
 pymongo
+pytest-flask
