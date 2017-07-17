@@ -345,43 +345,55 @@ class Db_Handler():
 
         self.questions.insert(placeholder)
 
-    def register_user(self, email, data):
+    def register_user(self, email, data=None):
         key = {"email": email}
+        if not data:
+            data = key
         for keys in data.keys():
             self.users.update(key, {"$set": {keys: data[keys]}}, True)
-        survey_questions = Db_Handler().questions.find_one()
-            
-        print(survey_questions)
-        self.users.update(key, {"$set": {"questions": (survey_questions)}}, True)
+        # TODO fix this so it actually pics the correct survey
+        # question instead of the first
+        survey_questions = self.questions.find_one()
+        # inserts the survery questions grabbed before to the user profile
+        self.users.update(
+            key, {"$set": {"questions": (survey_questions['questions'])}}, True)
 
     def lookup_user_by_id(self, user_id):
-        user_data = Db_Handler().users.find_one(ObjectId(user_id))
+        user_data = self.users.find_one(ObjectId(user_id))
         return user_data
 
     def get_id_from_email(self, email):
-        data = Db_Handler().users.find_one({"email": email})
+        data = self.users.find_one({"email": email})
         return data["_id"]
 
     def get_survey_questions(self):
-        data = Db_Handler().questions.find_one({})
+        # TODO this should be selecting by specific ID
+        data = self.questions.find_one({})
         return data
 
     def get_company_from_email(self, email):
-        data = Db_Handler().users.find_one({"email": email})
-        print(data)
+        # finds email domain to search
+        email_domain = email.split("@")[1]
+
+        data = self.users.find_one(
+            {"email": {"$regex": ".*" + email_domain + ".*"}})
+
         if data:
-            return data['company']
+            if 'company' in data:
+                return data['company']
+            else:
+                return None
         else:
             return None
 
-    def insert_answers(self, data):
-        print(data)
-        email = data['email']
-        text = data['text']
-        key = {"$and": [{"email": email}, {"questions.text": text}]}
-        del data['email']
-        data = Db_Handler().users.update(
-            key, {'$set': {'questions.$.response': data['response']}})
+    def insert_answers(self, user_id, text, response):
+        # data must have an email + text + response field
+        key = {"$and": [{"_id": ObjectId(user_id)}, {"questions.text": text}]}
+        #key = {"questions.text": "I feel I need to be recognized for my work more frequently. "}
+        data = self.users.update(
+            key, {'$set': {'questions.$.response': response}})
+        
+        return data
 
 
 if __name__ == "__main__":
@@ -390,7 +402,7 @@ if __name__ == "__main__":
         "first": "Russell",
         "last": "Ratcliffe",
         "email": "russell@deephire.io",
-        "org": "DeepHire",
+        "company": "DeepHire",
         "time": datetime.datetime.now()
 
     }
@@ -404,10 +416,10 @@ if __name__ == "__main__":
     # print(handler.get_id_from_email("russell@deephire.io"))
     # handler.questions.delete_many({})
     # handler.questions.delete_many({})
-    #handler.users.delete_many({})
+    # handler.users.delete_many({})
     # handler.initialize_questionnaire()
     data = {"email": "russell@deephire.io", "metric": "Recognition",
             "sub_metric": "Recognition Frequency",
             "text":
             "I am happy with how frequently I am recognized.", "response": 4}
-    #print(handler.insert_answers(data))
+    # print(handler.insert_answers(data))

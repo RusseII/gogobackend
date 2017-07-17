@@ -1,22 +1,22 @@
 """Python Flask API Auth0 integration example
 """
-
+import bson
 from bson import Binary, Code
 from bson.json_util import dumps
+from bson import json_util
+from bson.objectid import ObjectId
 import pprint
 
 from functools import wraps
 import json
 from os import environ as env, path
 from urllib.request import urlopen
-from db import db_handler
-
+from db.db_handler import Db_Handler
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, _app_ctx_stack
+from flask import Flask, request, jsonify, _app_ctx_stack, abort
 from flask_cors import cross_origin, CORS
 from jose import jwt
 from engine.send_emails import HandleEmail
-from flask import request
 
 load_dotenv(path.join(path.dirname(__file__), ".env"))
 AUTH0_DOMAIN = env["AUTH0_DOMAIN"]
@@ -30,54 +30,82 @@ CORS(APP)
 def handle_error(error, status_code):
     """Handles the errors
     """
-    resp = jsonify(error)
+    resp = jsonify({"message": error})
     resp.status_code = status_code
     return resp
 
 
-@APP.route("/v1/create_account", methods=['POST'])
-@cross_origin(headers=["Content-Type", "Authorization"])
-def create_account():
-    data = request.get_data().decode('utf-8')
-    data = json.loads(data)
-    email = data["email"]
-    db_handler.Db_Handler().register_user(email, data)
-    user_id = str(db_handler.Db_Handler().get_id_from_email(email))
-    HandleEmail().send(email, user_id)
-    return(str({"user_id": user_id}))
-
-
-# @APP.route("/lookup_user_by_id", methods=['GET', 'POST'])
+@APP.route("/v1.0/accounts/", methods=['POST'])
+# if post method it creats an account
 # @cross_origin(headers=["Content-Type", "Authorization"])
-# def lookup_user_by_id():
-#     data = request.get_data().decode('utf-8')
-#     data = json.loads(data)
-#     user_id = data["user_id"]
-#     user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
-#     print(user_info)
-#     return str(user_info)
+def create_account():
+    if request.headers['Content-Type'] != "application/json":
+        return handle_error("Content-Type != application/json", 400)
+    if not 'email' in request.json:
+        return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
+    data = request.json
+    email = data['email']
+    Db_Handler().register_user(email, data)
+    user_id = str(Db_Handler().get_id_from_email(
+        email))
+    # returns user_id for ease of use
+    company = Db_Handler().get_company_from_email(email)
+    resp = jsonify({"user_id": user_id, "company": company})
+    resp.status_code = 201
+    return resp
 
 
-@APP.route("/v1/lookup_user_by_id/<user_id>", methods=['GET'])
+@APP.route("/v1.0/accounts/<user_id>", methods=['GET'])
+# if get method lookup user with __ id
+# @cross_origin(headers=["Content-Type", "Authorization"])
+def lookup_user_by_id(user_id):
+    try:
+        user_info = Db_Handler().lookup_user_by_id(user_id)
+    except bson.errors.InvalidId as err:
+        return handle_error(str(err), 400)
+    if user_info:
+        user_info['_id'] = str(user_info['_id'])
+    resp = jsonify(user_info)
+    resp.status_code = 200
+    return resp
+
+
+@APP.route("/v1.0/answers", methods=['POST'])
+# @cross_origin(headers=["Content-Type", "Authorization"])
+def submit_answers(user_id):
+    if request.headers['Content-Type'] != "application/json":
+        return handle_error("Content-Type != application/json", 400)
+    if 'user_id' or 'text' or 'response' not in request.json:
+        return handle_error("Request needs email and text keys.", 400)
+
+    data = request.json()
+    user_id = data['user_id']
+    text = data['text']
+    response = data['response']
+
+    Db_Handler().insert_answers(user_id, text, response)
+    # return HttpResponse(status=204)
+
+
+@APP.route("/v1.0/survey/get_questions", methods=['GET'])
+@APP.route("/v1.0/survey/get_questions/<lookup>", methods=['GET'])
 @cross_origin(headers=["Content-Type", "Authorization"])
-def lookup_user_by_id2(user_id):
-    user_info = db_handler.Db_Handler().lookup_user_by_id(user_id)
-    print(user_info)
-    return str(user_info)
+# gets questions from first survey
+def get_questions(lookup=None):
+    questions = Db_Handler().get_survey_questions()
+    resp = jsonify(questions)
+    resp.status_code = 200
+    return resp
 
 
-@APP.route("/v1/survey/get_questions/<lookup>", methods=['GET'])
+@APP.route("/v1.0/survey/companies/<id>", methods=['GET'])
+# gets company from email
 @cross_origin(headers=["Content-Type", "Authorization"])
-def get_questions(lookup):
-    questions = db_handler.Db_Handler().get_survey_questions()
-    return str(questions)
-
-
-@APP.route("/v1/survey/get_company/<email_or_id>", methods=['GET'])
-@cross_origin(headers=["Content-Type", "Authorization"])
-def get_company(email_or_id):
-    company = db_handler.Db_Handler().get_company_from_email(email_or_id)
-    return str({"company": company})
+def get_company(id):
+    company = Db_Handler().get_company_from_id(id)
+    resp = jsonify({"company": company})
+    resp.status_code = 200
+    return resp
 
 
 def get_token_auth_header():
@@ -231,7 +259,7 @@ def secured_private_ping():
 def get_questionnaire():
     """Get a survey from database
     """
-    questionnaire = db_handler.Db_Handler().get_questionnaire("DeepHire")
+    questionnaire = Db_Handler().get_questionnaire("DeepHire")
     return dumps(questionnaire)
 
 
@@ -245,9 +273,9 @@ def insert_response():
     test = json.loads(data)
     print(test)
 
-    db_handler.Db_Handler().insert_one_response(test)
+    Db_Handler().insert_one_response(test)
 
-    for doc in db_handler.Db_Handler().responses.find():
+    for doc in Db_Handler().responses.find():
         print(doc)
     HandleEmail().send("russell@deephire.io", test)
     HandleEmail().send("steve@deephire.io", test)
