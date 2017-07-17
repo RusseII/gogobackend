@@ -284,5 +284,5 @@ def create_app(db):
     return app
 
 if __name__ == "__main__":
-    app = create_app()
+    app = create_app("prod")
     app.run(debug=True, host="0.0.0.0", port=env.get("PORT", 3001))
