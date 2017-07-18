@@ -20,7 +20,6 @@ class TestDbHandler():
         company_id = self.db.create_company(
             "deephire_test", "russell_test@deephire.io")
         obj = self.db.companies.find_one({"_id": company_id})
-        print(obj)
         assert(obj["company"] == "deephire_test")
 
     russell = {
