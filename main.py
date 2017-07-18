@@ -36,7 +36,7 @@ def create_app(db):
         resp.status_code = status_code
         return resp
 
-    @app.route("/v1.0/accounts", methods=['POST'])
+    @app.route("/v1.0/accounts", methods=['POST', "PUT"])
     # if post method it creats an account
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def create_account():
