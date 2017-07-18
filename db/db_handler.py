@@ -1,7 +1,7 @@
 import pymongo
 from bson import ObjectId
 import os
-from init import placeholder
+from db.init import placeholder
 
 
 class Db_Handler():
@@ -12,12 +12,7 @@ class Db_Handler():
         usrn = os.environ.get('MONGO_NAME')
         # can also pass in url to db as a string
         self.client = pymongo.MongoClient(
-            "mongodb://" + usrn + ":" + passw + """@mongo-db-production-
-            shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-
-            shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-
-            shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-
-            Production?ssl=true&replicaSet=Mongo-DB-Production-
-            shard-0&authSource=admin""")
+            "mongodb://" + usrn + ":" + passw + """@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin""")
 
         if db == "prod":
             self.questionnaires = self.client.deephire.questionnaires
