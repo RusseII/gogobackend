@@ -56,15 +56,14 @@ class TestFlask:
         assert res.json['company'] == "deephire"
 
     def test_submit_answers(self, client):
-
         headers = {'Content-Type': "application/json"}
         data = {
             "user_id": "596c382dfd83e97fbcd911d0",
             "text": "I feel I need to be recognized for my work more frequently. ",
             "response": 8
         }
-        res = client.post(url_for('submit_answers'),
-                          data=json.dumps(data), headers=headers)
+        res = client.put(url_for('submit_answers'),
+                         data=json.dumps(data), headers=headers)
         assert res.status_code == 201
 
         data = {
@@ -72,8 +71,8 @@ class TestFlask:
             "text": "I feel I need to be recognized for my work more frequently. ",
             "response": 8
         }
-        res = client.post(url_for('submit_answers'),
-                          data=json.dumps(data), headers=headers)
+        res = client.put(url_for('submit_answers'),
+                         data=json.dumps(data), headers=headers)
         assert res.status_code == 400
 
         data = {
@@ -81,8 +80,8 @@ class TestFlask:
             "text": "I feel I need to be recognized for my work more frequently. ",
             "response": 8
         }
-        res = client.post(url_for('submit_answers'),
-                          data=json.dumps(data), headers=headers)
+        res = client.put(url_for('submit_answers'),
+                         data=json.dumps(data), headers=headers)
         assert res.status_code == 200
 
 

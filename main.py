@@ -69,7 +69,7 @@ def create_app(db):
         resp.status_code = 200
         return resp
 
-    @app.route("/v1.0/answers", methods=['POST'])
+    @app.route("/v1.0/answers", methods=['PUT'])
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def submit_answers():
         if request.headers['Content-Type'] != "application/json":
