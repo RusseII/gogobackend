@@ -6,6 +6,31 @@ import json
 
 class TestFlask:
 
+    def test_create_company(self, client):
+        headers = {'Content-Type': "application/json"}
+        data = {
+            "company": "dh3",
+            "email": "russell@deephire.io",
+        }
+
+        res = client.post(url_for('create_company'),
+                          data=json.dumps(data), headers=headers)
+        assert res.status_code == 201
+        assert res.json['company_id']
+        res = client.post(url_for('create_company'),
+                          data=json.dumps(data), headers={"wrong": "d"})
+        assert res.status_code == 400
+        res = client.post(url_for('create_company'),
+                          data=json.dumps(data))
+        assert res.status_code == 400
+
+        data = {
+            "email": "russell@deephire.io"
+        }
+        res = client.post(url_for('create_company'),
+                          data=json.dumps(data), headers=headers)
+        assert res.status_code == 400
+
     def test_get_questions(self, client):
         res = client.get(url_for('get_questions'))
         assert res.status_code == 200

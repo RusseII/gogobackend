@@ -12,42 +12,17 @@ from bson.json_util import dumps
 import os
 
 
-class TestParseData():
-    pd = ParseData()
-
-    def test_find_emails(self):
-        assert (self.pd.find_emails('tests/resumes/julie.doc') == [
-            "jha12@zips.uakron.edu"
-        ])
-        assert (self.pd.find_emails('tests/resumes/kyle.docx') == [
-            "Kjv13@zips.uakron.edu"
-        ])
-        assert (self.pd.find_emails('tests/resumes/russell.pdf') == [
-            "Rwr21@zips.uakron.edu"
-        ])
-        assert (self.pd.find_emails(
-            'tests/resumes/emails_test_find_emails.csv') == [
-                "rwr21@zips.uakron.edu", "rwr21@zips.uakron.edu"
-        ])
-
-
-class TestSendGrid():
-    hd = HandleEmail()
-
-    @pytest.fixture
-    def mock_send_grid(self):
-        return Mock(spec=HandleEmail)
-
-    def test_mock(self, mock_send_grid):
-        mock_send_grid.send("rwr21@zips.uakron.edu")
-
-    # @mock.patch('engine.send_emails.')
-    # def test_send_grid(self):
-
-
 class TestDbHandler():
     db = Db_Handler("test")
-  
+
+    def test_create_company(self):
+        self.db.companies.delete_one({"company": "deephire_test"})
+        company_id = self.db.create_company(
+            "deephire_test", "russell_test@deephire.io")
+        obj = self.db.companies.find_one({"_id": company_id})
+        print(obj)
+        assert(obj["company"] == "deephire_test")
+
     russell = {
         "first": "Russell",
         "last": "Ratcliffe",
@@ -89,10 +64,44 @@ class TestDbHandler():
         assert(self.db.get_company_from_email("john@newco.com") is None)
 
     def test_insert_answers(self):
-        obj = (self.db.insert_answers("596c382dfd83e97fbcd911d0", "I feel I need to be recognized for my work more frequently. ", 8))
+        obj = (self.db.insert_answers("596c382dfd83e97fbcd911d0",
+                                      "I feel I need to be recognized for my work more frequently. ", 8))
         assert(obj['updatedExisting'])
+
+
+class TestParseData():
+    pd = ParseData()
+
+    def test_find_emails(self):
+        assert (self.pd.find_emails('tests/resumes/julie.doc') == [
+            "jha12@zips.uakron.edu"
+        ])
+        assert (self.pd.find_emails('tests/resumes/kyle.docx') == [
+            "Kjv13@zips.uakron.edu"
+        ])
+        assert (self.pd.find_emails('tests/resumes/russell.pdf') == [
+            "Rwr21@zips.uakron.edu"
+        ])
+        assert (self.pd.find_emails(
+            'tests/resumes/emails_test_find_emails.csv') == [
+                "rwr21@zips.uakron.edu", "rwr21@zips.uakron.edu"
+        ])
+
+
+class TestSendGrid():
+    hd = HandleEmail()
+
+    @pytest.fixture
+    def mock_send_grid(self):
+        return Mock(spec=HandleEmail)
+
+    def test_mock(self, mock_send_grid):
+        mock_send_grid.send("rwr21@zips.uakron.edu")
+
+    # @mock.patch('engine.send_emails.')
+    # def test_send_grid(self):
+
 
 if __name__ == '__main__':
     TestDbHandler().test_insert_answers()
-    #TestDbHandler().db.users.delete_many({})
-
+    # TestDbHandler().db.users.delete_many({})

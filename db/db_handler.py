@@ -20,12 +20,15 @@ class Db_Handler():
             self.orgs = self.client.deephire.orgs
             self.questions = self.client.deephire.questions
             self.responses = self.client.deephire.responses
+            self.companies = self.client.deephire.companies
+
         if db == "test":
             self.questionnaires = self.client.test.questionnaires
             self.users = self.client.test.users
             self.orgs = self.client.test.orgs
             self.questions = self.client.test.questions
             self.responses = self.client.test.responses
+            self.companies = self.client.test.companies
 
     def initialize_questionnaire(self):
 
@@ -398,6 +401,18 @@ class Db_Handler():
             key, {'$set': {'questions.$.response': response}})
 
         return data
+
+    def create_company(self, company, email):
+        creator = email
+        email_domain = email.split("@")[1]
+        company_info = {"company": company,
+                        "creator": creator, "email_domain": email_domain}
+        company_id = self.companies.insert(company_info)
+        survey_questions = self.questions.find_one()
+        key = {"_id": company_id}
+        self.companies.update(
+            key, {"$set": {"questions": (survey_questions['questions'])}}, True)
+        return company_id
 
 
 if __name__ == "__main__":

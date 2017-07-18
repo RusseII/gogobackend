@@ -40,6 +40,8 @@ def create_app(db):
     # if post method it creats an account
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def create_account():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
         if 'email' not in request.json:
@@ -72,9 +74,11 @@ def create_app(db):
     @app.route("/v1.0/answers", methods=['PUT'])
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def submit_answers():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
-        if 'user_id' and'text' and 'response' not in request.json:
+        if ('user_id' or 'text' or 'response') not in request.json:
             return handle_error("Request needs user_id, email and text keys.", 400)
 
         data = request.json
@@ -106,6 +110,24 @@ def create_app(db):
         questions = Db_Handler(db).get_survey_questions()
         resp = jsonify(questions)
         resp.status_code = 200
+        return resp
+
+    @app.route("/v1.0/companies", methods=['POST'])
+    # gets company from id
+    # @cross_origin(headers=["Content-Type", "Authorization"])
+    def create_company():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
+        if request.headers['Content-Type'] != "application/json":
+            return handle_error("Content-Type != application/json", 400)
+        if ('company' or 'email') not in request.json:
+            return handle_error("Request needs company and email keys.", 400)
+        data = request.json
+        company = data['company']
+        email = data['email']
+        company_id = Db_Handler(db).create_company(company, email)
+        resp = jsonify({"company_id": str(company_id)})
+        resp.status_code = 201
         return resp
 
     @app.route("/v1.0/survey/companies/<email>", methods=['GET'])
