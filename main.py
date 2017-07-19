@@ -163,6 +163,30 @@ def create_app(db):
         resp.status_code = 200
         return resp
 
+
+
+    @app.route("/v1.0/companies/<company_name>", methods=['GET'])
+    @cross_origin(headers=["Content-Type", "Authorization"])
+    def get_company_info(company_name):
+        
+        resp.status_code = 200
+        return resp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def get_token_auth_header():
         """Obtains the access token from the Authorization Header
         """

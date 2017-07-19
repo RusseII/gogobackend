@@ -120,6 +120,23 @@ class Db_Handler():
         key = {"company": company}
         self.companies.update_one(key, {"$inc": {"number_of_employees": 1}})
 
+    def calculate_company_scores(self, company_id):
+        key = {"_id": company_id}
+        company = self.companies.find(key)
+
+        # 52 entires i think
+        for x in range(50):
+            total = 0
+            for user_ids in company['employees']:
+                key = {"_id": user_ids}
+                user_info = self.employees.find_one(key)
+                total += user_info['questions'][x]['response']
+                # fix this up to account for people who didn;t answer
+            average_score = total / (company['number_of_employees'])
+            company['questions'][x]['response'] = average_score
+        self.companies.update_one(key, company)
+       # update
+
 
 # def update_tags(ref, new_tag):
     # coll.update({'ref': ref}, {'$push': {'tags': new_tag}})
@@ -135,10 +152,10 @@ if __name__ == "__main__":
 
     }
 
-    handler = Db_Handler()
-    handler.register_user(user["email"], user)
+    handler = Db_Handler("prod")
+    #handler.register_user(user["email"], user)
     x = '595aa8fefd83e97fbceac9e0'
-    # handler.initialize_questionnaire()
+    #handler.initialize_questionnaire()
     # print(handler.get_survey_questions())
     # print(handler.lookup_user_by_id(x))
     # print(handler.get_id_from_email("russell@deephire.io"))

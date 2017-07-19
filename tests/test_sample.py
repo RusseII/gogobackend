@@ -46,7 +46,7 @@ class TestDbHandler():
     def test_register_user(self):
         self.db.register_user("russell@deephire.io")
         self.db.register_user("nick@deephire.io")
-        self.db.register_user("emerson@amazon.com")
+        self.db.register_user("emerson@amazon.")
         self.db.register_user("steve@youtube.com")
         self.db.register_user("junk")
 
@@ -80,6 +80,8 @@ class TestDbHandler():
         after_num = temp["number_of_employees"]
         assert((before_num + 1) == after_num)
 
+    def test_calculate_company_scores(self):
+        pass
 
 class TestParseData():
     pd = ParseData()
