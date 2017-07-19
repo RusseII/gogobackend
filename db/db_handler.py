@@ -1,7 +1,8 @@
 import pymongo
 from bson import ObjectId
 import os
-from db.init import placeholder
+  
+from db.init import set_survey_questions
 
 
 class Db_Handler():
@@ -32,7 +33,7 @@ class Db_Handler():
 
     def initialize_questionnaire(self):
 
-        self.questions.insert(placeholder)
+        self.questions.insert(set_survey_questions)
 
     def register_user(self, email):
         key = {"email": email}
@@ -130,7 +131,8 @@ class Db_Handler():
             for user_ids in company['employees']:
                 key = {"_id": user_ids}
                 user_info = self.employees.find_one(key)
-                total += user_info['questions'][x]['response']
+                if user_info['questions'][x]['response']:
+                    total += user_info['questions'][x]['response']
                 # fix this up to account for people who didn;t answer
             average_score = total / (company['number_of_employees'])
             company['questions'][x]['response'] = average_score

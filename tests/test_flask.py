@@ -2,16 +2,27 @@
 import pytest
 from flask import url_for
 import json
+from bson import ObjectId
+import sys
+sys.path.append('.')
+from db.init import set_survey_questions, users, set_companies
+from tests.test_sample import TestDbHandler
+
+
+# uses test dv as specified in fixture
 
 
 class TestFlask:
+
+    def setup_method(self, client):
+        TestDbHandler().setup_method()
 
     def test_create_company(self, client):
         headers = {'Content-Type': "application/json"}
         data = {
             "company": "dh3",
             "email": "russell@deephire.io",
-            "user_id": 3434
+            "user_id": 343433434
         }
 
         res = client.post(url_for('create_company'),
@@ -39,23 +50,23 @@ class TestFlask:
         assert res.json
         assert res.json['questions']
 
-    def test_get_comapnies(self, client):
-        res = client.get(url_for('get_companies', email="john@deephire.io"))
-        assert res.status_code == 200
-        assert res.json
-        assert res.json['company'] == "deephire"
-        res = client.get(url_for('get_companies', email="russell@deephire.io"))
-        assert res.status_code == 200
-        assert res.json
-        assert res.json['company'] == "deephire"
-        res = client.get(url_for('get_companies', email="test@lolwtf.com"))
-        assert res.status_code == 200
-        assert res.json
-        assert res.json['company'] is None
+    # def test_get_comapnies(self, client):
+    #     res = client.get(url_for('get_companies', email="john@deephire.io"))
+    #     assert res.status_code == 200
+    #     assert res.json
+    #     assert res.json['company'] == "deephire"
+    #     res = client.get(url_for('get_companies', email="russell@deephire.io"))
+    #     assert res.status_code == 200
+    #     assert res.json
+    #     assert res.json['company'] == "deephire"
+    #     res = client.get(url_for('get_companies', email="test@lolwtf.com"))
+    #     assert res.status_code == 200
+    #     assert res.json
+    #     assert res.json['company'] is None
 
     def test_accounts_lookup_user_by_id(self, client):
         res = client.get(url_for('accounts_lookup_user_by_id',
-                                 user_id="596c382dfd83e97fbcd911d0"))
+                                 user_id="596f6831202daf076567662a"))
         assert res.status_code == 200
         assert res.json
         assert res.json['company'] == "deephire"
@@ -70,22 +81,19 @@ class TestFlask:
     def test_create_account(self, client):
         headers = {'Content-Type': "application/json"}
         data = {
-            "first": "Russell",
-            "last": "Ratcliffe",
-            "email": "russell@deephire.io",
-            "company": "deephire"
+            "email": "russell@deephire.io"
         }
         res = client.post(url_for('create_account'),
                           data=json.dumps(data), headers=headers)
 
         assert res.status_code == 201
-        assert res.json['user_id'] == "596c382dfd83e97fbcd911d0"
+        assert res.json['user_id'] == "596f6831202daf076567662a"
         assert res.json['company'] == "deephire"
 
     def test_submit_answers(self, client):
         headers = {'Content-Type': "application/json"}
         data = {
-            "user_id": "596c382dfd83e97fbcd911d0",
+            "user_id": "596f6831202daf076567662a",
             "text": "I feel I need to be recognized for my work more frequently. ",
             "response": 8
         }

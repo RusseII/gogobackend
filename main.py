@@ -129,6 +129,7 @@ def create_app(db):
     # gets questions from first survey
     def get_questions(lookup=None):
         questions = Db_Handler(db).get_survey_questions()
+        questions["_id"] = str(questions["_id"])
         resp = jsonify(questions)
         resp.status_code = 200
         return resp
