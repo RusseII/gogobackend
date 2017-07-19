@@ -36,7 +36,7 @@ def create_app(db):
         resp.status_code = status_code
         return resp
 
-    @app.route("/v1.0/accounts", methods=['POST', "PUT"])
+    @app.route("/v1.0/accounts", methods=['POST'])
     # if post method it creats an account
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def create_account():
@@ -69,7 +69,7 @@ def create_app(db):
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
         if 'user_id' not in request.json:
-            return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
+            return handle_error("No user_id field in request.", 400)
         data = request.json
         user_id = data['user_id']
         Db_Handler(db).update_user(user_id, data)
