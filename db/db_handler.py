@@ -34,19 +34,28 @@ class Db_Handler():
 
         self.questions.insert(placeholder)
 
-    def register_user(self, email, data=None):
+    def register_user(self, email):
         key = {"email": email}
-        if not data:
-            data = key
+        if self.users.find_one(key) is not None:
+            return "user already exists"
+        else:
+            self.users.insert_one(key, key)
+
+        # TODO fix this so it actually pics the correct survey
+        # question instead of the first
+            survey_questions = self.questions.find_one()
+            # inserts the survery questions grabbed before to the user profile
+            self.users.update(
+                key, {"$set": {"questions": (survey_questions['questions'])}},
+                True)
+
+    def update_user(self, user_id, data):
+        key = {"_id": user_id}
         for keys in data.keys():
             self.users.update(key, {"$set": {keys: data[keys]}}, True)
         # TODO fix this so it actually pics the correct survey
         # question instead of the first
-        survey_questions = self.questions.find_one()
         # inserts the survery questions grabbed before to the user profile
-        self.users.update(
-            key, {"$set": {"questions": (survey_questions['questions'])}},
-            True)
 
     def lookup_user_by_id(self, user_id):
         user_data = self.users.find_one(ObjectId(user_id))
@@ -84,11 +93,15 @@ class Db_Handler():
 
         return data
 
-    def create_company(self, company, email):
+    def create_company(self, company, email, user_id):
         creator = email
         email_domain = email.split("@")[1]
-        company_info = {"company": company,
-                        "creator": creator, "email_domain": email_domain}
+        company_info = {
+            "company": company,
+            "creator": creator, "email_domain": email_domain,
+            "number_of_employees": 1,
+            "employees": [{"user_id": user_id}]
+        }
         company_id = self.companies.insert(company_info)
         survey_questions = self.questions.find_one()
         key = {"_id": company_id}
@@ -97,6 +110,19 @@ class Db_Handler():
             True)
         return company_id
 
+    def add_employee_to_company(self, company, user_id):
+        key = {"company": company}
+        self.companies.update_one(key, {"$push": {'employees': user_id}})
+        self.increment_company_employee_count(company)
+        return company
+
+    def increment_company_employee_count(self, company):
+        key = {"company": company}
+        self.companies.update_one(key, {"$inc": {"number_of_employees": 1}})
+
+
+# def update_tags(ref, new_tag):
+    # coll.update({'ref': ref}, {'$push': {'tags': new_tag}})
 
 if __name__ == "__main__":
     import datetime

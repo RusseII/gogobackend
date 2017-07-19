@@ -11,6 +11,7 @@ class TestFlask:
         data = {
             "company": "dh3",
             "email": "russell@deephire.io",
+            "user_id": 3434
         }
 
         res = client.post(url_for('create_company'),
@@ -25,7 +26,8 @@ class TestFlask:
         assert res.status_code == 400
 
         data = {
-            "email": "russell@deephire.io"
+            "email": "russell@deephire.io",
+            "user_id": 3434
         }
         res = client.post(url_for('create_company'),
                           data=json.dumps(data), headers=headers)

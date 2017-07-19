@@ -18,7 +18,7 @@ class TestDbHandler():
     def test_create_company(self):
         self.db.companies.delete_one({"company": "deephire_test"})
         company_id = self.db.create_company(
-            "deephire_test", "russell_test@deephire.io")
+            "deephire_test", "russell_test@deephire.io", 545645)
         obj = self.db.companies.find_one({"_id": company_id})
         assert(obj["company"] == "deephire_test")
 
@@ -44,9 +44,9 @@ class TestDbHandler():
     }
 
     def test_register_user(self):
-        self.db.register_user("russell@deephire.io", self.russell)
-        self.db.register_user("nick@deephire.io", self.nick)
-        self.db.register_user("emerson@amazon.com", self.emerson)
+        self.db.register_user("russell@deephire.io")
+        self.db.register_user("nick@deephire.io")
+        self.db.register_user("emerson@amazon.com")
         self.db.register_user("steve@youtube.com")
         self.db.register_user("junk")
 
@@ -66,6 +66,19 @@ class TestDbHandler():
         obj = (self.db.insert_answers("596c382dfd83e97fbcd911d0",
                                       "I feel I need to be recognized for my work more frequently. ", 8))
         assert(obj['updatedExisting'])
+
+    def test_add_employee_to_company(self):
+        self.db.add_employee_to_company(
+            "deephire_test", {"user_id": 343424252525})
+
+    def test_increment_company_employee_count(self):
+        key = {"company": "deephire_test"}
+        temp = self.db.companies.find_one(key)
+        before_num = temp["number_of_employees"]
+        self.db.increment_company_employee_count("deephire_test")
+        temp = self.db.companies.find_one(key)
+        after_num = temp["number_of_employees"]
+        assert((before_num + 1) == after_num)
 
 
 class TestParseData():
