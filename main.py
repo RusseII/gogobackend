@@ -40,18 +40,43 @@ def create_app(db):
     # if post method it creats an account
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def create_account():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
         if 'email' not in request.json:
             return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
         data = request.json
         email = data['email']
-        Db_Handler(db).register_user(email, data)
+        Db_Handler(db).register_user(email)
         user_id = str(Db_Handler(db).get_id_from_email(
             email))
         # returns user_id for ease of use
         company = Db_Handler(db).get_company_from_email(email)
         resp = jsonify({"user_id": user_id, "company": company})
+        Db_Handler(db).add_employee_to_company(company, user_id)
+        resp.status_code = 201
+        return resp
+
+
+
+    @app.route("/v1.0/accounts", methods=["PUT"])
+    # if post method it creats an account
+    # @cross_origin(headers=["Content-Type", "Authorization"])
+    def update_account():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
+        if request.headers['Content-Type'] != "application/json":
+            return handle_error("Content-Type != application/json", 400)
+        if 'user_id' not in request.json:
+            return handle_error("No user_id field in request.", 400)
+        data = request.json
+        user_id = data['user_id']
+        Db_Handler(db).update_user(user_id, data)
+       
+        # returns user_id for ease of use
+      
+        resp = jsonify({"success": True})
         resp.status_code = 201
         return resp
 
@@ -72,9 +97,11 @@ def create_app(db):
     @app.route("/v1.0/answers", methods=['PUT'])
     # @cross_origin(headers=["Content-Type", "Authorization"])
     def submit_answers():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
         if request.headers['Content-Type'] != "application/json":
             return handle_error("Content-Type != application/json", 400)
-        if 'user_id' and'text' and 'response' not in request.json:
+        if ('user_id' or 'text' or 'response') not in request.json:
             return handle_error("Request needs user_id, email and text keys.", 400)
 
         data = request.json
@@ -108,6 +135,25 @@ def create_app(db):
         resp.status_code = 200
         return resp
 
+    @app.route("/v1.0/companies", methods=['POST'])
+    # gets company from id
+    # @cross_origin(headers=["Content-Type", "Authorization"])
+    def create_company():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
+        if request.headers['Content-Type'] != "application/json":
+            return handle_error("Content-Type != application/json", 400)
+        if ('company' or 'email' or 'user_id') not in request.json:
+            return handle_error("Request needs company and email keys.", 400)
+        data = request.json
+        company = data['company']
+        email = data['email']
+        user_id = data['user_id']
+        company_id = Db_Handler(db).create_company(company, email, user_id)
+        resp = jsonify({"company_id": str(company_id)})
+        resp.status_code = 201
+        return resp
+
     @app.route("/v1.0/survey/companies/<email>", methods=['GET'])
     # gets company from id
     @cross_origin(headers=["Content-Type", "Authorization"])
@@ -116,6 +162,30 @@ def create_app(db):
         resp = jsonify({"company": company})
         resp.status_code = 200
         return resp
+
+
+
+    @app.route("/v1.0/companies/<company_name>", methods=['GET'])
+    @cross_origin(headers=["Content-Type", "Authorization"])
+    def get_company_info(company_name):
+        
+        resp.status_code = 200
+        return resp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def get_token_auth_header():
         """Obtains the access token from the Authorization Header
