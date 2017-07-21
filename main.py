@@ -49,12 +49,13 @@ def create_app(db):
         data = request.json
         email = data['email']
         Db_Handler(db).register_user(email)
-        user_id = str(Db_Handler(db).get_id_from_email(
+        user_id = (Db_Handler(db).get_id_from_email(
             email))
         # returns user_id for ease of use
         company = Db_Handler(db).get_company_from_email(email)
-        resp = jsonify({"user_id": user_id, "company": company})
+        Db_Handler(db).update_user(user_id, {"company": company})
         Db_Handler(db).add_employee_to_company(company, user_id)
+        resp = jsonify({"user_id": str(user_id), "company": company})
         resp.status_code = 201
         return resp
 

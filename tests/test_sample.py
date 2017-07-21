@@ -78,8 +78,9 @@ class TestDbHandler():
         employee_count = temp["number_of_employees"]
         assert((employee_count) == 2)
 
-    def test_calculate_company_scores(self):
-        pass
+    # def test_calculate_company_scores(self):
+    #     self.db.calculate_company_scores("596eea8e9b4d3900087c2d52")
+    #     pass
 
     def teardown_method(self):
 
