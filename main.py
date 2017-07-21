@@ -49,12 +49,13 @@ def create_app(db):
         data = request.json
         email = data['email']
         Db_Handler(db).register_user(email)
-        user_id = str(Db_Handler(db).get_id_from_email(
+        user_id = (Db_Handler(db).get_id_from_email(
             email))
         # returns user_id for ease of use
         company = Db_Handler(db).get_company_from_email(email)
-        resp = jsonify({"user_id": user_id, "company": company})
+        Db_Handler(db).update_user(user_id, {"company": company})
         Db_Handler(db).add_employee_to_company(company, user_id)
+        resp = jsonify({"user_id": str(user_id), "company": company})
         resp.status_code = 201
         return resp
 
@@ -70,7 +71,7 @@ def create_app(db):
             return handle_error("No user_id field in request.", 400)
         data = request.json
         user_id = data['user_id']
-        Db_Handler(db).update_user(user_id, data)
+        Db_Handler(db).update_user(ObjectId(user_id), data)
 
         # returns user_id for ease of use
 
@@ -129,6 +130,7 @@ def create_app(db):
     # gets questions from first survey
     def get_questions(lookup=None):
         questions = Db_Handler(db).get_survey_questions()
+        questions["_id"] = str(questions["_id"])
         resp = jsonify(questions)
         resp.status_code = 200
         return resp
@@ -164,18 +166,8 @@ def create_app(db):
     @app.route("/v1.0/companies/<company_name>", methods=['GET'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     def get_company_info(company_name):
-        temp = {
-            "_id": "596e67ecfd83e97fbcaaec03",
-            "company": "deephire",
-            "number_of_employees": 2,
-            "employees": [{"user_id": "tempid"}],
-            "questions": [{"creator": "Deephire",
-                           "metric": "Recognition",
-                           "sub_metric": "Recognition Frequency",
-                           "response": 4,
-                           "text": "I feel I need to be recognized for my work more frequently. "}]
-        }
-        resp = jsonify(temp)
+        company_info = Db_Handler().lookup_company_by_name(company_name)
+        resp = jsonify(company_info)
         resp.status_code = 200
         return resp
 

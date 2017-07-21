@@ -1,7 +1,8 @@
 import pymongo
 from bson import ObjectId
 import os
-from db.init import placeholder
+
+from db.init import set_survey_questions
 
 
 class Db_Handler():
@@ -32,7 +33,7 @@ class Db_Handler():
 
     def initialize_questionnaire(self):
 
-        self.questions.insert(placeholder)
+        self.questions.insert(set_survey_questions)
 
     def register_user(self, email):
         key = {"email": email}
@@ -51,6 +52,7 @@ class Db_Handler():
 
     def update_user(self, user_id, data):
         key = {"_id": user_id}
+        data.pop("user_id", None)
         for keys in data.keys():
             self.users.update(key, {"$set": {keys: data[keys]}}, True)
         # TODO fix this so it actually pics the correct survey
@@ -60,6 +62,10 @@ class Db_Handler():
     def lookup_user_by_id(self, user_id):
         user_data = self.users.find_one(ObjectId(user_id))
         return user_data
+
+    def lookup_company_by_name(self, company_name):
+        company_data = self.companies.find_one({"company": company_name})
+        return company_data
 
     def get_id_from_email(self, email):
         data = self.users.find_one({"email": email})
@@ -121,20 +127,27 @@ class Db_Handler():
         self.companies.update_one(key, {"$inc": {"number_of_employees": 1}})
 
     def calculate_company_scores(self, company_id):
-        key = {"_id": company_id}
-        company = self.companies.find(key)
+        company = self.companies.find_one(ObjectId(company_id))
 
         # 52 entires i think
-        for x in range(50):
+        for x in range(52):
             total = 0
+            num_of_peopple_answered = 0
             for user_ids in company['employees']:
-                key = {"_id": user_ids}
-                user_info = self.employees.find_one(key)
-                total += user_info['questions'][x]['response']
+
+                user_info = self.users.find_one(ObjectId(user_ids['user_id']))
+                if user_info['questions'][x]['response']:
+                    num_of_peopple_answered += 1    
+                    total += user_info['questions'][x]['response']
                 # fix this up to account for people who didn;t answer
-            average_score = total / (company['number_of_employees'])
+            if num_of_peopple_answered != 0:
+                average_score = total / (num_of_peopple_answered)
+            else: 
+                average_score = None
+
             company['questions'][x]['response'] = average_score
-        self.companies.update_one(key, company)
+        self.companies.update_one(
+            {"_id": ObjectId(company_id)}, {"$set": company})
        # update
 
 
@@ -153,9 +166,9 @@ if __name__ == "__main__":
     }
 
     handler = Db_Handler("prod")
-    #handler.register_user(user["email"], user)
+    # handler.register_user(user["email"], user)
     x = '595aa8fefd83e97fbceac9e0'
-    #handler.initialize_questionnaire()
+    # handler.initialize_questionnaire()
     # print(handler.get_survey_questions())
     # print(handler.lookup_user_by_id(x))
     # print(handler.get_id_from_email("russell@deephire.io"))
