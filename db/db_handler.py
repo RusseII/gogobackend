@@ -52,6 +52,7 @@ class Db_Handler():
 
     def update_user(self, user_id, data):
         key = {"_id": user_id}
+        data.pop("user_id", None)
         for keys in data.keys():
             self.users.update(key, {"$set": {keys: data[keys]}}, True)
         # TODO fix this so it actually pics the correct survey
@@ -61,6 +62,10 @@ class Db_Handler():
     def lookup_user_by_id(self, user_id):
         user_data = self.users.find_one(ObjectId(user_id))
         return user_data
+
+    def lookup_company_by_name(self, company_name):
+        company_data = self.companies.find_one({"company": company_name})
+        return company_data
 
     def get_id_from_email(self, email):
         data = self.users.find_one({"email": email})
@@ -125,17 +130,24 @@ class Db_Handler():
         company = self.companies.find_one(ObjectId(company_id))
 
         # 52 entires i think
-        for x in range(50):
+        for x in range(52):
             total = 0
+            num_of_peopple_answered = 0
             for user_ids in company['employees']:
 
                 user_info = self.users.find_one(ObjectId(user_ids['user_id']))
                 if user_info['questions'][x]['response']:
+                    num_of_peopple_answered += 1    
                     total += user_info['questions'][x]['response']
                 # fix this up to account for people who didn;t answer
-            average_score = total / (company['number_of_employees'])
+            if num_of_peopple_answered != 0:
+                average_score = total / (num_of_peopple_answered)
+            else: 
+                average_score = None
+
             company['questions'][x]['response'] = average_score
-        self.companies.update_one({"_id": ObjectId(company_id)}, company)
+        self.companies.update_one(
+            {"_id": ObjectId(company_id)}, {"$set": company})
        # update
 
 

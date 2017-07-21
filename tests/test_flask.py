@@ -98,9 +98,6 @@ class TestFlask:
                           data=json.dumps(data), headers=headers)
         assert res.status_code == 201
         assert res.json['company'] == "deephire"
-        
-
-
 
     def test_submit_answers(self, client):
         headers = {'Content-Type': "application/json"}
