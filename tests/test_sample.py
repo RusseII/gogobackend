@@ -16,7 +16,7 @@ from db.init import set_survey_questions, users, set_companies
 class TestDbHandler():
     db = Db_Handler("test")
 
-    def setup_method(self):
+    def test_method(self):
         self.db.questions.delete_many({})
         self.db.users.delete_many({})
         self.db.companies.delete_many({})
@@ -79,7 +79,7 @@ class TestDbHandler():
         assert((employee_count) == 2)
 
     def test_calculate_company_scores(self):
-        self.db.calculate_company_scores("596eea8e9b4d3900087c2d52")
+        self.db.calculate_company_scores2("596eea8e9b4d3900087c2d52")
 
     def test_lookup_company_by_name(self):
         company = self.db.lookup_company_by_name("deephire")

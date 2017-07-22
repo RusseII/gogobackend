@@ -17,6 +17,7 @@ from flask import Flask, request, jsonify, _app_ctx_stack, abort
 from flask_cors import cross_origin, CORS
 from jose import jwt
 from engine.send_emails import HandleEmail
+from engine.full_contact import FullContact
 
 
 def create_app(db):
@@ -150,6 +151,9 @@ def create_app(db):
         email = data['email']
         user_id = data['user_id']
         company_id = Db_Handler(db).create_company(company, email, user_id)
+        if company_id == "Company Exists":
+            return handle_error("company already exists", 400)
+        FullContact(db).lookup_company_update(company_id)
         resp = jsonify({"company_id": str(company_id)})
         resp.status_code = 201
         return resp

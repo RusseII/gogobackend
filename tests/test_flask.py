@@ -15,8 +15,8 @@ from tests.test_sample import TestDbHandler
 
 class TestFlask:
 
-    def setup_method(self, client):
-        TestDbHandler().setup_method()
+    def test_method(self, client):
+        TestDbHandler().test_method()
 
     def test_create_company(self, client):
         headers = {'Content-Type': "application/json"}
