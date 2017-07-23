@@ -5,6 +5,7 @@ import json
 from bson import ObjectId
 import sys
 import time
+import os
 sys.path.append('.')
 from db.init import set_survey_questions, users, set_companies
 from tests.test_sample import TestDbHandler
@@ -13,13 +14,15 @@ from tests.test_sample import TestDbHandler
 # uses test dv as specified in fixture
 
 
-class TestFlask:
+class TestFlask():
 
     def test_method(self, client):
         TestDbHandler().test_method()
 
     def test_create_company(self, client):
-        headers = {'Content-Type': "application/json"}
+        token = os.environ.get("AUTH0_TOKEN")
+        headers = {'Content-Type': "application/json",
+                   "authorization": 'Bearer ' + token}
         data = {
             "company": "dh3",
             "email": "russell@deephire.io",
@@ -31,10 +34,10 @@ class TestFlask:
         assert res.status_code == 201
         assert res.json['company_id']
         res = client.post(url_for('create_company'),
-                          data=json.dumps(data), headers={"wrong": "d"})
+                          data=json.dumps(data), headers={"wrong": "d", "authorization": 'Bearer ' + token})
         assert res.status_code == 400
         res = client.post(url_for('create_company'),
-                          data=json.dumps(data))
+                          data=json.dumps(data), headers={"authorization": 'Bearer ' + token})
         assert res.status_code == 400
 
         data = {
@@ -46,41 +49,52 @@ class TestFlask:
         assert res.status_code == 400
 
     def test_get_questions(self, client):
-        res = client.get(url_for('get_questions'))
+        token = os.environ.get("AUTH0_TOKEN")
+        headers = {"authorization": 'Bearer ' + token}
+        res = client.get(url_for('get_questions'), headers=headers)
         assert res.status_code == 200
         assert res.json
         assert res.json['questions']
 
     def test_get_comapnies(self, client):
-        res = client.get(url_for('get_companies', email="john@deephire.io"))
+        token = os.environ.get("AUTH0_TOKEN")
+        headers = {"authorization": 'Bearer ' + token}
+        res = client.get(
+            url_for('get_companies', email="john@deephire.io"), headers=headers)
         assert res.status_code == 200
         assert res.json
         assert res.json['company'] == "deephire"
-        res = client.get(url_for('get_companies', email="russell@deephire.io"))
+        res = client.get(
+            url_for('get_companies', email="russell@deephire.io"), headers=headers)
         assert res.status_code == 200
         assert res.json
         assert res.json['company'] == "deephire"
-        res = client.get(url_for('get_companies', email="test@lolwtf.com"))
+        res = client.get(
+            url_for('get_companies', email="test@lolwtf.com"), headers=headers)
         assert res.status_code == 200
         assert res.json
         assert res.json['company'] is None
 
     def test_accounts_lookup_user_by_id(self, client):
+        token = os.environ.get("AUTH0_TOKEN")
+        headers = {"authorization": 'Bearer ' + token}
         res = client.get(url_for('accounts_lookup_user_by_id',
-                                 user_id="596f6831202daf076567662a"))
+                                 user_id="596f6831202daf076567662a"), headers=headers)
         assert res.status_code == 200
         assert res.json
         assert res.json['company'] == "deephire"
         res = client.get(
-            url_for('accounts_lookup_user_by_id', user_id="596c382dfd83e97fbc291130"))
+            url_for('accounts_lookup_user_by_id', user_id="596c382dfd83e97fbc291130"), headers=headers)
         assert res.status_code == 200
         assert res.json is None
         res = client.get(url_for('accounts_lookup_user_by_id',
-                                 user_id="test@lolwtf.com"))
+                                 user_id="test@lolwtf.com"), headers=headers)
         assert res.status_code == 400
 
     def test_create_account(self, client):
-        headers = {'Content-Type': "application/json"}
+        token = os.environ.get("AUTH0_TOKEN")
+        headers = {'Content-Type': "application/json",
+                   "authorization": 'Bearer ' + token}
         data = {
             "email": "russell@deephire.io"
         }
@@ -100,7 +114,9 @@ class TestFlask:
         assert res.json['company'] == "deephire"
 
     def test_submit_answers(self, client):
-        headers = {'Content-Type': "application/json"}
+        token = os.environ.get("AUTH0_TOKEN")
+        headers = {'Content-Type': "application/json",
+                   "authorization": 'Bearer ' + token}
         data = {
             "user_id": "596f6831202daf076567662a",
             "text": "I feel I need to be recognized for my work more frequently. ",
