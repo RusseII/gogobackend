@@ -252,7 +252,7 @@ def create_app(db):
                         token,
                         rsa_key,
                         algorithms=unverified_header["alg"],
-                        audience=API_AUDIENCE,
+                        audience="https://api.deephire.io",
                         issuer="https://" + AUTH0_DOMAIN + "/")
                 except jwt.ExpiredSignatureError:
                     return handle_error({

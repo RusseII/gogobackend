@@ -16,7 +16,7 @@ class HandleEmail():
     def __init__(self):
         pass
 
-    def send(self, email, unique_id="error", contents="No contents has been entered"):
+    def send(self, email, company, user_id="error", contents="No contents has been entered"):
         sg = sendgrid.SendGridAPIClient(
             apikey=os.environ.get('SENDGRID_API_KEY'))
 
@@ -29,7 +29,7 @@ class HandleEmail():
         source_code = HtmlFile.read()
 
         source_code = source_code.replace(
-            "REPLACE", "https://www.deephire.io/login/" + unique_id)
+            "REPLACE", "https://www.deephire.io/login/" + user_id)
 
         data = {
             "personalizations": [
