@@ -22,7 +22,7 @@ test:
     # runs tests and passes the enviroment variables stored in cirlceci
     - docker run -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e AUTH0_TOKEN=$AUTH0_TOKEN -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM" pytest
     # runs container detached, exposes port 3001, and passed env variables.  
-    - docker run -d -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e AUTH0_TOKEN=$AUTH0_TOKEN your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 10
+    - docker run -d -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e AUTH0_TOKEN=$AUTH0_TOKEN -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 10
     # pings url to make sure that container started correctly  
     - curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
     
