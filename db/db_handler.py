@@ -1,6 +1,7 @@
 import pymongo
 from bson import ObjectId
 import os
+import time
 
 from db.init import set_survey_questions
 
@@ -59,6 +60,22 @@ class Db_Handler():
         # question instead of the first
         # inserts the survery questions grabbed before to the user profile
 
+    def update_company(self, company_id, data):
+        key = {"_id": ObjectId(company_id)}
+        data.pop("company_id", None)
+        for keys in data.keys():
+            self.companies.update(key, {"$set": {keys: data[keys]}}, True)
+
+    def update_company_calculate(self, company_id, data):
+        key = {"_id": company_id}
+        #data.pop("user_id", None)
+
+        for x, question in enumerate(data['questions']):
+            # print(question)
+            response = question['response']
+            print(self.companies.update(
+                key, {"$set": {"questions." + str(x) + ".response": response}}))
+
     def lookup_user_by_id(self, user_id):
         user_data = self.users.find_one(ObjectId(user_id))
         return user_data
@@ -100,6 +117,8 @@ class Db_Handler():
         return data
 
     def create_company(self, company, email, user_id):
+        if self.companies.find_one({"company": company}):
+            return "Company Exists"
         creator = email
         email_domain = email.split("@")[1]
         company_info = {
@@ -126,29 +145,66 @@ class Db_Handler():
         key = {"company": company}
         self.companies.update_one(key, {"$inc": {"number_of_employees": 1}})
 
-    def calculate_company_scores(self, company_id):
+    # def calculate_company_scores(self, company_id):
+    #     company = self.companies.find_one(ObjectId(company_id))
+
+    #     # 52 entires i think
+    #     for x in range(52):
+    #         total = 0
+    #         num_of_peopple_answered = 0
+    #         for user_ids in company['employees']:
+
+    #             user_info = self.users.find_one(ObjectId(user_ids['user_id']))
+    #             if user_info['questions'][x]['response']:
+    #                 num_of_peopple_answered += 1
+    #                 total += user_info['questions'][x]['response']
+    #             # fix this up to account for people who didn;t answer
+    #         if num_of_peopple_answered != 0:
+    #             average_score = total / (num_of_peopple_answered)
+    #         else:
+    #             average_score = None
+
+    #         company['questions'][x]['response'] = average_score
+    #     self.companies.update_one(
+    #         {"_id": ObjectId(company_id)}, {"$set": company})
+       # update
+
+    def calculate_company_scores2(self, company_id):
         company = self.companies.find_one(ObjectId(company_id))
 
         # 52 entires i think
-        for x in range(52):
+        num_of_questions = len(company['questions'])
+
+        for x in range(num_of_questions):
             total = 0
             num_of_peopple_answered = 0
             for user_ids in company['employees']:
 
                 user_info = self.users.find_one(ObjectId(user_ids['user_id']))
                 if user_info['questions'][x]['response']:
-                    num_of_peopple_answered += 1    
+                    num_of_peopple_answered += 1
                     total += user_info['questions'][x]['response']
                 # fix this up to account for people who didn;t answer
             if num_of_peopple_answered != 0:
                 average_score = total / (num_of_peopple_answered)
-            else: 
-                average_score = None
+            else:
+                average_score =  None
 
             company['questions'][x]['response'] = average_score
-        self.companies.update_one(
-            {"_id": ObjectId(company_id)}, {"$set": company})
+
+        self.update_company_calculate(ObjectId(company_id), company)
+        # assert(False)
+        # self.companies.update_one(
+        #     {"_id": ObjectId(company_id)}, {"$set": company})
+        return num_of_questions
        # update
+
+    def get_company_domain_from_id(self, company_id):
+        company = self.companies.find_one(ObjectId(company_id))
+        return company['email_domain']
+
+    def fill_company_info_with_fullcontact(self):
+        pass
 
 
 # def update_tags(ref, new_tag):
