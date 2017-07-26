@@ -42,28 +42,36 @@ jobs:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/app.tar
+
+      - run:
+          name: Run tests
+          command: |
+            docker run -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e AUTH0_TOKEN=$AUTH0_TOKEN -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM" pytest
+
       - run:
           name: Run Docker Image
           command: |
-            docker run -d -p 3001:3001 "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 5
+            docker run --name=deephire -d -p 3001:3001 -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e AUTH0_TOKEN=$AUTH0_TOKEN -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 5
       - run:
           name: Ping Docker Image
           command: |
-            curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
+            docker exec deephire curl --retry 10 --retry-delay 5 -v http://localhost:3001/ping
  
       - deploy:
           name: Push application Docker image
           command: |
             
             docker push "deephire/backend:$CIRCLE_BUILD_NUM"
-            sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
-            chmod +x ./.deploy/setup-eb.sh
-            ./.deploy/setup-eb.sh
-            
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
+              chmod +x ./.deploy/setup-eb.sh
+              ./.deploy/setup-eb.sh
               cd .deploy/prod && eb deploy -l $CIRCLE_BUILD_NUM
 
             elif [ "${CIRCLE_BRANCH}" == "develop" ]; then 
+              sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
+              chmod +x ./.deploy/setup-eb.sh
+              ./.deploy/setup-eb.sh
               cd .deploy/dev && eb deploy -l $CIRCLE_BUILD_NUM
 
             fi
