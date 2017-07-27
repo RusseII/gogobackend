@@ -63,13 +63,13 @@ jobs:
             
             docker push "deephire/backend:$CIRCLE_BUILD_NUM"
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
+              sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/prod/Dockerrun.aws.json
               chmod +x ./.deploy/setup-eb.sh
               ./.deploy/setup-eb.sh
               cd .deploy/prod && eb deploy -l $CIRCLE_BUILD_NUM
 
             elif [ "${CIRCLE_BRANCH}" == "develop" ]; then 
-              sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/Dockerrun.aws.json
+              sed -i'' -e "s;%BUILD_NUM%;$CIRCLE_BUILD_NUM;g" ./.deploy/dev/Dockerrun.aws.json
               chmod +x ./.deploy/setup-eb.sh
               ./.deploy/setup-eb.sh
               cd .deploy/dev && eb deploy -l $CIRCLE_BUILD_NUM
