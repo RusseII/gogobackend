@@ -46,12 +46,12 @@ jobs:
       - run:
           name: Run tests
           command: |
-            docker run -p 3001:3001 -e AUTH0_ID=$AUTH0_ID -e AUTH0_SECRERT=$AUTH0_SECRET -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM" pytest
+            docker run -p 3001:3001 -e AUTH0_ID=$AUTH0_ID -e AUTH0_SECRET=$AUTH0_SECRET -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM" pytest
 
       - run:
           name: Run Docker Image
           command: |
-            docker run --name=deephire -d -p 3001:3001 -e AUTH0_ID=$AUTH0_ID -e AUTH0_SECRERT=$AUTH0_SECRET -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 5
+            docker run --name=deephire -d -p 3001:3001 -e AUTH0_ID=$AUTH0_ID -e AUTH0_SECRET=$AUTH0_SECRET -e AUTH0_DOMAIN=$AUTH0_DOMAIN -e API_ID=$API_ID -e SENDGRID_API_KEY=$SENDGRID_API_KEY -e MONGO_PASS=$MONGO_PASS -e MONGO_NAME=$MONGO_NAME -e your_key=$your_key "deephire/backend:$CIRCLE_BUILD_NUM"; sleep 5
       - run:
           name: Ping Docker Image
           command: |
