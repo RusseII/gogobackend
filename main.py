@@ -208,9 +208,13 @@ def create_app(db):
         except bson.errors.InvalidId as err:
             return handle_error(str(err), 400)
         if user_info:
+            print(user_info)
             user_info['_id'] = str(user_info['_id'])
-        resp = jsonify(user_info)
-        resp.status_code = 200
+            resp = jsonify(user_info)
+            resp.status_code = 200
+        else:
+            resp = jsonify({"exists": None})
+            resp.status_code = 204
         return resp
 
     @app.route("/v1.0/answers", methods=['PUT'])

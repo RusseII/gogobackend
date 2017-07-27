@@ -6,6 +6,7 @@ from bson import ObjectId
 import sys
 import time
 import os
+import http.client
 sys.path.append('.')
 from db.init import set_survey_questions, users, set_companies
 from tests.test_sample import TestDbHandler
@@ -18,9 +19,21 @@ class TestFlask():
 
     def test_method(self, client):
         TestDbHandler().test_method()
+        client_id = os.environ.get("AUTH0_ID")
+        client_secret = os.environ.get("AUTH0_SECRET")
+        conn = http.client.HTTPSConnection("deephire.auth0.com")
+        payload = "{\"client_id\":\"" + client_id + "\",\"client_secret\":\"" + client_secret + "\",\"audience\":\"https://api.deephire.io\",\"grant_type\":\"client_credentials\"}"
+        headers = {'content-type': "application/json"}
+        conn.request("POST", "/oauth/token", payload, headers)
+        res = conn.getresponse()
+        data = res.read()
+        data = data.decode("utf-8")
+        data = json.loads(data)
+        os.environ['AUTH0_TOKEN'] = data['access_token']
 
     def test_create_company(self, client):
         token = os.environ.get("AUTH0_TOKEN")
+
         headers = {'Content-Type': "application/json",
                    "authorization": 'Bearer ' + token}
         data = {
@@ -83,10 +96,10 @@ class TestFlask():
         assert res.status_code == 200
         assert res.json
         assert res.json['company'] == "deephire"
-        res = client.get(
-            url_for('accounts_lookup_user_by_id', user_id="596c382dfd83e97fbc291130"), headers=headers)
-        assert res.status_code == 200
-        assert res.json is None
+        res = client.get(url_for('accounts_lookup_user_by_id',
+                                 user_id="596c382dfd83e97fbc291130"), headers=headers)
+        assert res.status_code == 204
+        
         res = client.get(url_for('accounts_lookup_user_by_id',
                                  user_id="test@lolwtf.com"), headers=headers)
         assert res.status_code == 400
