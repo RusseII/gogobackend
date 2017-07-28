@@ -6,7 +6,7 @@ from bson.json_util import dumps
 from bson import json_util
 from bson.objectid import ObjectId
 import pprint
-
+from validate_email import validate_email
 from functools import wraps
 import json
 from os import environ as env, path
@@ -162,6 +162,8 @@ def create_app(db):
             return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
         data = request.json
         email = data['email']
+        if not validate_email(email,check_mx=True):
+            return handle_error("Email is invalid", 400)
         Db_Handler(db).register_user(email)
         user_id = (Db_Handler(db).get_id_from_email(
             email))

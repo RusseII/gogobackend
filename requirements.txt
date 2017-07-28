@@ -11,3 +11,5 @@ python-jose
 flask-cors
 pymongo
 pytest-flask
+validate_email
+py3DNS
