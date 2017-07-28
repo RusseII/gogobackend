@@ -162,7 +162,7 @@ def create_app(db):
             return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
         data = request.json
         email = data['email']
-        if not validate_email(email,check_mx=True):
+        if not validate_email(email):
             return handle_error("Email is invalid", 400)
         Db_Handler(db).register_user(email)
         user_id = (Db_Handler(db).get_id_from_email(
