@@ -147,6 +147,30 @@ def create_app(db):
 
         return decorated
 
+
+    @app.route("/v1.0/newsletter", methods=['POST'])
+    @cross_origin(headers=["Content-Type", "Authorization"])
+    @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
+    @requires_auth
+    # if post method it creats an account
+    # @cross_origin(headers=["Content-Type", "Authorization"])
+    def newsletter_signup():
+        if 'Content-Type' not in request.headers:
+            return handle_error("No Content-Type header supplied", 400)
+        if request.headers['Content-Type'] != "application/json":
+            return handle_error("Content-Type != application/json", 400)
+        if 'email' not in request.json:
+            return handle_error("No email field in request. Needs {'email': '<test@gmail.com>'}", 400)
+        data = request.json
+        email = data['email']
+        if not validate_email(email):
+            return handle_error("Email is invalid", 400)
+        Db_Handler.add_newslettter(email)
+        resp = jsonify({"email": email})
+        resp.status_code = 201
+        return resp
+
+
     @app.route("/v1.0/accounts", methods=['POST'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
@@ -264,6 +288,7 @@ def create_app(db):
         resp.status_code = 200
         return resp
 
+   
     @app.route("/v1.0/companies", methods=['POST'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     @cross_origin(headers=["Access-Control-Allow-Origin", "*"])

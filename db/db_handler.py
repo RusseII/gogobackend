@@ -23,6 +23,7 @@ class Db_Handler():
             self.questions = self.client.deephire.questions
             self.responses = self.client.deephire.responses
             self.companies = self.client.deephire.companies
+            self.newsletter = self.client.deephire.newsletter
 
         if db == "test":
             self.questionnaires = self.client.test.questionnaires
@@ -31,10 +32,14 @@ class Db_Handler():
             self.questions = self.client.test.questions
             self.responses = self.client.test.responses
             self.companies = self.client.test.companies
+            self.newsletter = self.client.deephire.newsletter
 
     def initialize_questionnaire(self):
 
         self.questions.insert(set_survey_questions)
+
+    def add_newslettter(self, email):
+        self.newsletter.insert({"email": email})
 
     def register_user(self, email):
         key = {"email": email}
@@ -188,7 +193,7 @@ class Db_Handler():
             if num_of_peopple_answered != 0:
                 average_score = total / (num_of_peopple_answered)
             else:
-                average_score =  None
+                average_score = None
 
             company['questions'][x]['response'] = average_score
 
