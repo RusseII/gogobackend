@@ -165,7 +165,7 @@ def create_app(db):
         email = data['email']
         if not validate_email(email):
             return handle_error("Email is invalid", 400)
-        Db_Handler.add_newslettter(email)
+        Db_Handler(db).add_newslettter(email)
         resp = jsonify({"email": email})
         resp.status_code = 201
         return resp
