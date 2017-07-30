@@ -38,10 +38,15 @@ class Db_Handler():
 
         self.questions.insert(set_survey_questions)
 
-    
-
     def add_newslettter(self, email):
+        # checks to see if someone with that email already registered
+        exists = self.newsletter.find_one({"email": email})
+        # if someone with that email already registered return True (so we can
+        # make sure that we don't email that user again)
+        if exists:
+            return True
         self.newsletter.insert({"email": email})
+        return False
 
     def register_user(self, email):
         key = {"email": email}
