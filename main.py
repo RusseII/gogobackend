@@ -147,7 +147,6 @@ def create_app(db):
 
         return decorated
 
-
     @app.route("/v1.0/newsletter", methods=['POST'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
@@ -166,10 +165,10 @@ def create_app(db):
         if not validate_email(email):
             return handle_error("Email is invalid", 400)
         Db_Handler(db).add_newslettter(email)
+        HandleEmail().send_signup_email(email)
         resp = jsonify({"email": email})
         resp.status_code = 201
         return resp
-
 
     @app.route("/v1.0/accounts", methods=['POST'])
     @cross_origin(headers=["Content-Type", "Authorization"])
@@ -288,7 +287,6 @@ def create_app(db):
         resp.status_code = 200
         return resp
 
-   
     @app.route("/v1.0/companies", methods=['POST'])
     @cross_origin(headers=["Content-Type", "Authorization"])
     @cross_origin(headers=["Access-Control-Allow-Origin", "*"])
@@ -333,12 +331,6 @@ def create_app(db):
         resp = jsonify(company_info)
         resp.status_code = 200
         return resp
-
-
-
-
-
-
 
     # Controllers API
     @app.route("/ping")

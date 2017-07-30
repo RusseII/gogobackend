@@ -38,6 +38,8 @@ class Db_Handler():
 
         self.questions.insert(set_survey_questions)
 
+    
+
     def add_newslettter(self, email):
         self.newsletter.insert({"email": email})
 

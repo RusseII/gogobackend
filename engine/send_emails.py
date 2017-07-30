@@ -2,9 +2,13 @@
 # https://github.com/sendgrid/sendgrid-python
 import sendgrid
 import os
-from sendgrid.helpers.mail import Email, Content, Mail, MailSettings, SandBoxMode
-
-
+from sendgrid.helpers.mail import Email, Content, Mail, MailSettings, SandBoxMode, Substitution
+try:
+    # Python 3
+    import urllib.request as urllib
+except ImportError:
+    # Python 2
+    import urllib2 as urllib
 try:
     from engine.parse_files import ParseData
 except:
@@ -15,6 +19,25 @@ class HandleEmail():
 
     def __init__(self):
         pass
+
+    def send_signup_email(self, email):
+
+        sg = sendgrid.SendGridAPIClient(
+            apikey=os.environ.get('SENDGRID_API_KEY'))
+        from_email = Email("Russell@DeepHire.io")
+        subject = " "
+        to_email = Email(email)
+        content = Content(
+            "text/html", " ")
+        mail = Mail(from_email=from_email, subject=subject, to_email=to_email, content=content)
+        mail.template_id = "b4fbf477-d6ef-4f8b-8220-d4d0000e23df"
+        try:
+            response = sg.client.mail.send.post(request_body=mail.get())
+        except urllib.HTTPError as e:
+            print(e.read())
+        # print(response.status_code)
+        # print(response.body)
+        # print(response.headers)
 
     def send(self, email, company, user_id="error", contents="No contents has been entered"):
         sg = sendgrid.SendGridAPIClient(
@@ -47,7 +70,8 @@ class HandleEmail():
         }
 
         if type(email) == str:
-            # mail_to is redundent because i was getting a weird error without it.
+            # mail_to is redundent because i was getting a weird error without
+            # it.
             mail_to = {
                 "to": [
                     {
@@ -90,5 +114,5 @@ class HandleEmail():
 
 
 if __name__ == '__main__':
-    print(HandleEmail().send(
-        "rwr21@zips.uakron.edu"))
+    # print(HandleEmail().send_signup_email("rratcliffe57@gmail.com"))
+    pass

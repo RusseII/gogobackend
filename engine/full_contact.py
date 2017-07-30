@@ -1,6 +1,5 @@
 import os
 import requests
-import json
 from db.db_handler import Db_Handler
 
 
