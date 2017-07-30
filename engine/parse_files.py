@@ -15,9 +15,11 @@ import time
 
 
 class ParseData():
+
     def __init__(self):
         pass
         # print("Creating ParseData Object")
+
     def word_parser(self, file):
         text = docx2txt.process(file)
         return text

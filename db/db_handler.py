@@ -1,215 +1,251 @@
 import pymongo
-import pprint
-from bson import Binary, Code, ObjectId
-from bson.json_util import dumps
+from bson import ObjectId
 import os
+import time
+
+from db.init import set_survey_questions
 
 
 class Db_Handler():
 
-    def __init__(self):
+    def __init__(self, db):
         # can also pass in url to db as a string
         passw = os.environ.get('MONGO_PASS')
         usrn = os.environ.get('MONGO_NAME')
-        self.client = pymongo.MongoClient("mongodb://"+ usrn + ":" + passw + "@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin")  # can also pass in url to db as a string
-        self.questionnaires = self.client.deephire.questionnaires
-        self.questions = self.client.deephire.questions
-        self.users = self.client.deephire.users
-        self.orgs = self.client.deephire.orgs
+        # can also pass in url to db as a string
+        self.client = pymongo.MongoClient(
+            "mongodb://" + usrn + ":" + passw + """@mongo-db-production-shard-00-00-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-01-tjcvk.mongodb.net:27017,mongo-db-production-shard-00-02-tjcvk.mongodb.net:27017/ Mongo-DB-Production?ssl=true&replicaSet=Mongo-DB-Production-shard-0&authSource=admin""")
 
-        self.responses = self.client.deephire.responses
+        if db == "prod":
+            self.questionnaires = self.client.deephire.questionnaires
+            self.users = self.client.deephire.users
+            self.orgs = self.client.deephire.orgs
+            self.questions = self.client.deephire.questions
+            self.responses = self.client.deephire.responses
+            self.companies = self.client.deephire.companies
+            self.newsletter = self.client.deephire.newsletter
+
+        if db == "test":
+            self.questionnaires = self.client.test.questionnaires
+            self.users = self.client.test.users
+            self.orgs = self.client.test.orgs
+            self.questions = self.client.test.questions
+            self.responses = self.client.test.responses
+            self.companies = self.client.test.companies
+            self.newsletter = self.client.deephire.newsletter
 
     def initialize_questionnaire(self):
-        self.questions.insert_many([{
-            "_id":
-            ObjectId("5931a9fb9c9870798ac4d4e3"),
-            "creator":
-            "Deephire",
-            "text":
-            "Do you know what is expected of you at work?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecda"),
-            "creator":
-            "Deephire",
-            "text":
-            "Do you have the materials and equipment to do your work right?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecdb"),
-            "creator":
-            "Deephire",
-            "text":
-            "In the last seven days, have you received recognition or praise for dsoing good work?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecdc"),
-            "creator":
-            "Deephire",
-            "text":
-            "Does your supervisor, or someone at work, seem to care about you as a person?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecdd"),
-            "creator":
-            "Deephire",
-            "text":
-            "Is there someone at work who encourages your development?"
-        }, {
-            "_id": ObjectId("5931ab77f25839ce7e73ecde"),
-            "creator": "Deephire",
-            "text": "At work, do your opinions seem to count?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ecdf"),
-            "creator":
-            "Deephire",
-            "text":
-            "Does the mission/purpose of your company make you feel your job is important?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ece0"),
-            "creator":
-            "Deephire",
-            "text":
-            "Are your associates (fellow employees) committed to doing quality work?"
-        }, {
-            "_id": ObjectId("5931ab77f25839ce7e73ece1"),
-            "creator": "Deephire",
-            "text": "Do you have a best friend at work?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ece2"),
-            "creator":
-            "Deephire",
-            "text":
-            "In the last six months, has someone at work talked to you about your progress?"
-        }, {
-            "_id":
-            ObjectId("5931ab77f25839ce7e73ece3"),
-            "creator":
-            "Deephire",
-            "text":
-            "In the last year, have you had opportunities to learn and grow?"
-        }, {
-            "_id":
-            ObjectId("5931abf3f25839ce7e73ece4"),
-            "creator":
-            "Deephire",
-            "text":
-            "At work, do you have the opportunity to do what you do best every day?"
-        }])
 
-        self.questionnaires.insert([{
-            "org":
-            "DeepHire",
-            "questions": [{
-                "question_id": ObjectId("5931a9fb9c9870798ac4d4e3")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ecda")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ecdb")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ecdc")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ecdd")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ecde")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ecdf")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ece0")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ece1")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ece2")
-            }, {
-                "question_id": ObjectId("5931ab77f25839ce7e73ece3")
-            }, {
-                "question_id": ObjectId("5931abf3f25839ce7e73ece4")
-            }]
-        }])
-        # yapf: disable
-        survey = {
-         "questions":
-             [
-               {"text" : "question 1"},
-               {"text" : "question 2"},
-               {"text" : "question 3"},
-               {"text" : "question 4"},
-               {"text" : "question 5"},
-               {"text" : "question 6"},
-               {"text" : "question 7"},
-               {"text" : "question 8"},
-               {"text" : "question 9"},
-               {"text" : "question 10"},
-               {"text" : "question 12"}
-             ],
-          "name": "Culture Assessment Test"
-         }
-        # yapf: enable
-        self.questionnaires.insert_one(survey)
+        self.questions.insert(set_survey_questions)
 
-    def get_placeholder_analysis(self, data):
-        """This is placeholder analysis.
-           Demonstrates ability to match on n conditions on one collection
-        """
+    def add_newslettter(self, email):
+        # checks to see if someone with that email already registered
+        exists = self.newsletter.find_one({"email": email})
+        # if someone with that email already registered return True (so we can
+        # make sure that we don't email that user again)
+        if exists:
+            return True
+        self.newsletter.insert({"email": email})
+        return False
 
-        response = self.responses.aggregate([{
-            "$match": {
-                "$and": [{
-                    "responses": "i hate my bodsfsvss"
-                }, {
-                    "organization": "DeepHire"
-                }]
-            }
-        }])
-        return response
+    def register_user(self, email):
+        key = {"email": email}
+        if self.users.find_one(key) is not None:
+            return "user already exists"
+        else:
+            self.users.insert_one(key, key)
 
-    def get_total_responses(self, data):
-        return self.responses({org: data.org})
+        # TODO fix this so it actually pics the correct survey
+        # question instead of the first
+            survey_questions = self.questions.find_one()
+            # inserts the survery questions grabbed before to the user profile
+            self.users.update(
+                key, {"$set": {"questions": (survey_questions['questions'])}},
+                True)
 
-    def register_user(self, data):
-        self.users.insert_one(data)
+    def update_user(self, user_id, data):
+        key = {"_id": user_id}
+        data.pop("user_id", None)
+        for keys in data.keys():
+            self.users.update(key, {"$set": {keys: data[keys]}}, True)
+        # TODO fix this so it actually pics the correct survey
+        # question instead of the first
+        # inserts the survery questions grabbed before to the user profile
 
-    def register_org(self, data):
-        self.orgs.insert_one(data)
+    def update_company(self, company_id, data):
+        key = {"_id": ObjectId(company_id)}
+        data.pop("company_id", None)
+        for keys in data.keys():
+            self.companies.update(key, {"$set": {keys: data[keys]}}, True)
 
-    def get_questionnaire(self, org):
-        questions = self.questionnaires.aggregate([{
-            "$match": {
-                "org": org
-            }
-        }, {
-            "$unwind": "$questions"
-        }, {
-            "$lookup": {
-                "from": "questions",
-                "localField": "questions.question_id",
-                "foreignField": "_id",
-                "as": "ldefault"
-            }
-        }])
-        return questions
+    def update_company_calculate(self, company_id, data):
+        key = {"_id": company_id}
+        #data.pop("user_id", None)
 
-    def insert_question(self, data):
-        self.questions.insert_one(data)
+        for x, question in enumerate(data['questions']):
+            # print(question)
+            response = question['response']
+            print(self.companies.update(
+                key, {"$set": {"questions." + str(x) + ".response": response}}))
 
-    def get_custom_questions(self, data):
-        return self.questions.find({"creator": data.creator})
+    def lookup_user_by_id(self, user_id):
+        user_data = self.users.find_one(ObjectId(user_id))
+        return user_data
 
-    def insert_one_response(self, data):
-        self.responses.insert_one(data)
+    def lookup_company_by_name(self, company_name):
+        company_data = self.companies.find_one({"company": company_name})
+        return company_data
+
+    def get_id_from_email(self, email):
+        data = self.users.find_one({"email": email})
+        return data["_id"]
+
+    def get_survey_questions(self):
+        # TODO this should be selecting by specific ID
+        data = self.questions.find_one({})
+        return data
+
+    def get_company_from_email(self, email):
+        # finds email domain to search
+        email_domain = email.split("@")[1]
+
+        data = self.users.find_one(
+            {"email": {"$regex": ".*" + email_domain + ".*"}})
+
+        if data:
+            if 'company' in data:
+                return data['company']
+            else:
+                return None
+        else:
+            return None
+
+    def insert_answers(self, user_id, text, response):
+        # data must have an email + text + response field
+        key = {"$and": [{"_id": ObjectId(user_id)}, {"questions.text": text}]}
+        data = self.users.update(
+            key, {'$set': {'questions.$.response': response}})
+
+        return data
+
+    def create_company(self, company, email, user_id):
+        if self.companies.find_one({"company": company}):
+            return "Company Exists"
+        creator = email
+        email_domain = email.split("@")[1]
+        company_info = {
+            "company": company,
+            "creator": creator, "email_domain": email_domain,
+            "number_of_employees": 1,
+            "employees": [{"user_id": user_id}]
+        }
+        company_id = self.companies.insert(company_info)
+        survey_questions = self.questions.find_one()
+        key = {"_id": company_id}
+        self.companies.update(
+            key, {"$set": {"questions": (survey_questions['questions'])}},
+            True)
+        return company_id
+
+    def add_employee_to_company(self, company, user_id):
+        key = {"company": company}
+        self.companies.update_one(key, {"$push": {'employees': user_id}})
+        self.increment_company_employee_count(company)
+        return company
+
+    def increment_company_employee_count(self, company):
+        key = {"company": company}
+        self.companies.update_one(key, {"$inc": {"number_of_employees": 1}})
+
+    # def calculate_company_scores(self, company_id):
+    #     company = self.companies.find_one(ObjectId(company_id))
+
+    #     # 52 entires i think
+    #     for x in range(52):
+    #         total = 0
+    #         num_of_peopple_answered = 0
+    #         for user_ids in company['employees']:
+
+    #             user_info = self.users.find_one(ObjectId(user_ids['user_id']))
+    #             if user_info['questions'][x]['response']:
+    #                 num_of_peopple_answered += 1
+    #                 total += user_info['questions'][x]['response']
+    #             # fix this up to account for people who didn;t answer
+    #         if num_of_peopple_answered != 0:
+    #             average_score = total / (num_of_peopple_answered)
+    #         else:
+    #             average_score = None
+
+    #         company['questions'][x]['response'] = average_score
+    #     self.companies.update_one(
+    #         {"_id": ObjectId(company_id)}, {"$set": company})
+       # update
+
+    def calculate_company_scores2(self, company_id):
+        company = self.companies.find_one(ObjectId(company_id))
+
+        # 52 entires i think
+        num_of_questions = len(company['questions'])
+
+        for x in range(num_of_questions):
+            total = 0
+            num_of_peopple_answered = 0
+            for user_ids in company['employees']:
+
+                user_info = self.users.find_one(ObjectId(user_ids['user_id']))
+                if user_info['questions'][x]['response']:
+                    num_of_peopple_answered += 1
+                    total += user_info['questions'][x]['response']
+                # fix this up to account for people who didn;t answer
+            if num_of_peopple_answered != 0:
+                average_score = total / (num_of_peopple_answered)
+            else:
+                average_score = None
+
+            company['questions'][x]['response'] = average_score
+
+        self.update_company_calculate(ObjectId(company_id), company)
+        # assert(False)
+        # self.companies.update_one(
+        #     {"_id": ObjectId(company_id)}, {"$set": company})
+        return num_of_questions
+       # update
+
+    def get_company_domain_from_id(self, company_id):
+        company = self.companies.find_one(ObjectId(company_id))
+        return company['email_domain']
+
+    def fill_company_info_with_fullcontact(self):
+        pass
+
+
+# def update_tags(ref, new_tag):
+    # coll.update({'ref': ref}, {'$push': {'tags': new_tag}})
 
 if __name__ == "__main__":
-  user = {
-      "first": "Russell",
-      "last": "Ratcliffe",
-      "email": "russell@deephire.io",
-      "org": "DeepHire"
-  }
+    import datetime
+    user = {
+        "first": "Russell",
+        "last": "Ratcliffe",
+        "email": "russell@deephire.io",
+        "company": "DeepHire",
+        "time": datetime.datetime.now()
 
-  handler = Db_Handler()
-  #handler.register_user(user)
-  #handler.initialize_questionnaire()
-  print(dumps(handler.get_questionnaire('DeepHire')))
+    }
+
+    handler = Db_Handler("prod")
+    # handler.register_user(user["email"], user)
+    x = '595aa8fefd83e97fbceac9e0'
+    # handler.initialize_questionnaire()
+    # print(handler.get_survey_questions())
+    # print(handler.lookup_user_by_id(x))
+    # print(handler.get_id_from_email("russell@deephire.io"))
+    # handler.questions.delete_many({})
+    # handler.questions.delete_many({})
+    # handler.users.delete_many({})
+    # handler.initialize_questionnaire()
+    data = {"email": "russell@deephire.io", "metric": "Recognition",
+            "sub_metric": "Recognition Frequency",
+            "text":
+            "I am happy with how frequently I am recognized.", "response": 4}
+    # print(handler.insert_answers(data))
