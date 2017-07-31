@@ -282,8 +282,9 @@ def create_app(db):
     @cross_origin(headers=["Content-Type", "Authorization"])
     # gets questions from first survey
     def get_questions(lookup=None):
-        questions = Db_Handler(db).get_survey_questions()
-        questions["_id"] = str(questions["_id"])
+        questions = Db_Handler(db).get_survey_questions(lookup)
+        # questions["_id"] = str(questions["_id"])
+        print(questions)
         resp = jsonify(questions)
         resp.status_code = 200
         return resp

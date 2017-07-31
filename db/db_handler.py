@@ -2,8 +2,8 @@ import pymongo
 from bson import ObjectId
 import os
 import time
-
-from db.init import set_survey_questions
+import random
+# from db.init import set_survey_questions
 
 
 class Db_Handler():
@@ -80,7 +80,7 @@ class Db_Handler():
 
     def update_company_calculate(self, company_id, data):
         key = {"_id": company_id}
-        #data.pop("user_id", None)
+        # data.pop("user_id", None)
 
         for x, question in enumerate(data['questions']):
             # print(question)
@@ -100,10 +100,52 @@ class Db_Handler():
         data = self.users.find_one({"email": email})
         return data["_id"]
 
-    def get_survey_questions(self):
-        # TODO this should be selecting by specific ID
-        data = self.questions.find_one({})
-        return data
+    def get_survey_questions(self, user_id=None, num=10):
+
+        # this are in order with questions\
+        if user_id == None:
+            user = self.users.find_one({})
+            user_id = str(user["_id"])
+        x = 0
+        question_content = []
+        answered = False
+        if num > 10:
+            num = 10
+
+        metrics = ["Recognition", "Ambassadorship", "Feedback", "Relationship with Peers",
+                   "Relationship with Manager", "Satisfaction", "Alignment",
+                   "Happiness", "Wellness", "Personal Growth"]
+        user_info = self.users.find_one(ObjectId(user_id))
+        for questions in user_info['questions']:
+
+            if answered:
+                answered = False
+                if last_metric != questions['metric']:
+                    x += 1
+            if questions['response']:
+                answered = True
+                last_metric = questions['metric']
+            else:
+                if metrics[x] == questions['metric']:
+                    x += 1
+                    question_content.append(questions)
+                    # this is to make sure that x is no incremented twice
+
+            if x == 10:
+                break
+
+        if num != 10:
+            indexs = random.sample(range(0, 10), num)
+            print(indexs)
+
+            shorter_questions = []
+            for nums in indexs:
+                shorter_questions.append(question_content[nums])
+            question_content = shorter_questions
+
+        # data = self.qquestions.find_one({})
+
+        return {"questions": question_content}
 
     def get_company_from_email(self, email):
         # finds email domain to search
@@ -233,19 +275,21 @@ if __name__ == "__main__":
 
     }
 
-    handler = Db_Handler("prod")
+    handler = Db_Handler("test")
+    print(handler.get_survey_questions("596f6831202daf076567662d", 2))
+
     # handler.register_user(user["email"], user)
-    x = '595aa8fefd83e97fbceac9e0'
-    # handler.initialize_questionnaire()
-    # print(handler.get_survey_questions())
-    # print(handler.lookup_user_by_id(x))
-    # print(handler.get_id_from_email("russell@deephire.io"))
-    # handler.questions.delete_many({})
-    # handler.questions.delete_many({})
-    # handler.users.delete_many({})
-    # handler.initialize_questionnaire()
-    data = {"email": "russell@deephire.io", "metric": "Recognition",
-            "sub_metric": "Recognition Frequency",
-            "text":
-            "I am happy with how frequently I am recognized.", "response": 4}
+    # x = '595aa8fefd83e97fbceac9e0'
+    # # handler.initialize_questionnaire()
+    # # print(handler.get_survey_questions())
+    # # print(handler.lookup_user_by_id(x))
+    # # print(handler.get_id_from_email("russell@deephire.io"))
+    # # handler.questions.delete_many({})
+    # # handler.questions.delete_many({})
+    # # handler.users.delete_many({})
+    # # handler.initialize_questionnaire()
+    # data = {"email": "russell@deephire.io", "metric": "Recognition",
+    #         "sub_metric": "Recognition Frequency",
+    #         "text":
+    #         "I am happy with how frequently I am recognized.", "response": 4}
     # print(handler.insert_answers(data))
